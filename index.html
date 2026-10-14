@@ -268,6 +268,15 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
 .sheet-foot .r{display:flex;gap:8px;margin-left:auto}
 .err{color:var(--bad);font-size:13px;margin:0}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#15181C;border:1px solid var(--green-line);color:var(--ink);padding:10px 16px;border-radius:10px;font-size:13.5px;z-index:30;box-shadow:0 12px 30px -10px rgba(0,0,0,.8);max-width:calc(100% - 32px)}
+.notif{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:50%;width:min(380px,calc(100% - 24px));transform:translate(-50%,0);z-index:40;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:12px 14px;border-radius:18px;background:rgba(24,27,31,.88);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);border:1px solid var(--line-2);box-shadow:0 18px 50px -12px rgba(0,0,0,.9),0 0 0 1px rgba(47,196,205,.08);cursor:pointer;transition:transform .45s cubic-bezier(.2,.9,.25,1.15),opacity .3s}
+.notif[hidden]{display:grid!important;transform:translate(-50%,calc(-100% - 30px));opacity:0;pointer-events:none}
+.notif .logo{grid-row:span 2}
+.notif-top{grid-column:2/4;display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink-3)}
+.notif-top b{color:var(--ink-2);font-weight:600;letter-spacing:.02em;text-transform:uppercase;font-size:11px}
+.notif-body{grid-column:2/4;font-size:14px;line-height:1.35;color:var(--ink)}
+.notif-body strong{display:block;font-weight:600}
+.notif-body .plus{color:var(--good);font-family:var(--f-mono);font-weight:600}
+.notif-body small{display:block;color:var(--ink-3);font-size:12px;margin-top:2px}
 .toast button{margin-left:12px;background:transparent;border:0;color:var(--green);font-weight:600;text-decoration:underline;cursor:pointer;padding:0}
 
 /* Schnell erfassen */
@@ -320,6 +329,18 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
   .inv-head,.inv-row{grid-template-columns:minmax(0,1fr) auto auto;gap:10px;padding-inline:14px}
   .inv-list{margin-inline:-18px}
 }
+/* Screenshot einlesen */
+.shot-sheet{max-width:640px}
+.shot-row{display:grid;grid-template-columns:auto minmax(0,1fr) 96px;gap:10px;align-items:start;padding:11px 0;border-bottom:1px solid var(--line)}
+.shot-row input[type=checkbox]{width:18px;height:18px;margin-top:2px;accent-color:var(--green)}
+.shot-main{display:flex;flex-direction:column;gap:6px;min-width:0}
+.shot-main .it-t{overflow-wrap:anywhere}
+.shot-main select{font-size:14px;padding:7px 9px}
+.price-mini{display:flex;align-items:center;gap:4px;color:var(--ink-3)}
+.price-mini input{padding:7px 8px;text-align:right;font-variant-numeric:tabular-nums}
+.shot-check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--ink-2)}
+.shot-check input{width:18px;height:18px;accent-color:var(--green)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* Verkaufen-Fenster */
 .s-item{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--line-2);border-radius:12px;background:var(--card-2)}
 .s-profit{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:12px 14px;border-radius:12px;background:var(--good-bg);border:1px solid rgba(94,227,138,.25)}
@@ -569,6 +590,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
           <div class="ph-title"><span class="ico"><svg class="i" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg></span><h2 id="h-inv">Meine Ware</h2></div>
           <div class="inv-actions">
             <button type="button" class="icon-btn" id="btn-csv" title="Liste herunterladen (für Excel)" aria-label="Liste herunterladen"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></button>
+            <button type="button" class="btn" id="inv-shot" title="Verkäufe aus einem Vinted-Screenshot einlesen"><svg class="i" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Screenshot</button>
             <button type="button" class="btn" id="inv-bulk"><svg class="i" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg>Großeinkauf</button>
             <button type="button" class="btn primary" id="inv-add"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Einkauf</button>
           </div>
@@ -660,6 +682,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
     <div class="chips" id="q-sugg" aria-label="Häufige Artikel"></div>
     <div class="field"><label for="q-price">Einkaufspreis</label><div class="price-in"><input type="text" inputmode="decimal" id="q-price" placeholder="0,00" enterkeyhint="done"><span>€</span></div></div>
     <div class="chips" id="q-pchips" aria-label="Schnellpreise"></div>
+    <div class="field"><label for="q-list">Für wie viel stellst du es auf Vinted rein? <span class="muted">(freiwillig)</span></label><input type="text" inputmode="decimal" id="q-list" placeholder="z. B. 35"><span class="help">Dann reicht beim Verkauf ein Tipp auf „Verkauft“.</span></div>
     <div class="field"><span class="flabel">Kategorie</span><div class="chips" id="q-cat"></div></div>
     <div class="field"><span class="flabel">Gekauft bei</span><div class="chips" id="q-src"></div><input type="text" id="q-src-new" placeholder="Andere Quelle eintippen …" aria-label="Andere Bezugsquelle"></div>
     <details class="q-more"><summary>Größe &amp; Nebenkosten</summary>
@@ -693,6 +716,19 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
     <button type="submit" class="btn primary big-btn" id="s-save">Als verkauft speichern</button>
   </form>
 </div>
+<div class="modal quick" id="shot" hidden>
+  <div class="sheet qs shot-sheet" role="dialog" aria-modal="true" aria-labelledby="shot-title">
+    <div class="sheet-head"><h2 id="shot-title">Verkäufe aus Screenshot</h2><button type="button" class="btn ghost" data-shclose>Schließen</button></div>
+    <p class="note">Mach in der Vinted-App einen Screenshot deiner <strong>verkauften Artikel</strong> und wähle ihn hier aus. Das Bild wird <strong>nur auf diesem Gerät gelesen</strong> und nirgendwo hochgeladen. Prüf die Liste, bevor du speicherst.</p>
+    <label class="btn primary big-btn" for="shot-file"><svg class="i" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Screenshot auswählen</label>
+    <input type="file" id="shot-file" class="sr" accept="image/*" multiple>
+    <p class="small muted" id="shot-status" hidden></p>
+    <div id="shot-list"></div>
+    <label class="shot-check" id="shot-shipped-wrap" hidden><input type="checkbox" id="shot-shipped" checked> Diese Pakete sind schon verschickt</label>
+    <p class="err" id="shot-err" hidden></p>
+    <button type="button" class="btn primary big-btn" id="shot-save" hidden>Als verkauft speichern</button>
+  </div>
+</div>
 <div class="modal" id="bulk" hidden>
   <form class="sheet" id="b-form" autocomplete="off" role="dialog" aria-modal="true" aria-labelledby="b-title">
     <div class="sheet-head"><h2 id="b-title">Großeinkauf erfassen</h2><button type="button" class="btn ghost" data-bclose>Schließen</button></div>
@@ -702,9 +738,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
       <div class="field"><label for="b-date">Gekauft am</label><input type="date" id="b-date"></div>
       <div class="field"><label for="b-total">Gesamtpreis Ware (€)</label><input type="number" id="b-total" step="0.01" min="0" inputmode="decimal" placeholder="z. B. 200"></div>
       <div class="field"><label for="b-ship">Versand &amp; Zoll (€)</label><input type="number" id="b-ship" step="0.01" min="0" inputmode="decimal" placeholder="0"></div>
+      <div class="field"><label for="b-list">Vinted-Preis pro Teil (€)</label><input type="number" id="b-list" step="1" min="0" inputmode="decimal" placeholder="freiwillig"><span class="help">Dann reicht später ein Tipp auf „Verkauft“</span></div>
       <div class="field"><label for="b-count">Anzahl Teile</label><input type="number" id="b-count" step="1" min="1" max="300" inputmode="numeric" placeholder="z. B. 20"><span class="help">Oder unten die Teile auflisten</span></div>
       <div class="field"><label for="b-cat">Kategorie</label><select id="b-cat"></select></div>
-      <div class="field wide"><label for="b-lines">Teile auflisten (freiwillig, eins pro Zeile)</label><textarea id="b-lines" rows="5" placeholder="Levi's 501 W32&#10;Levi's 517 W30; 14&#10;True Religion W33; 25"></textarea><span class="help">„; 14“ am Ende = dieses Teil hat 14 € gekostet. Der Rest vom Gesamtpreis wird gleichmäßig verteilt.</span></div>
+      <div class="field wide"><label for="b-lines">Teile auflisten (freiwillig, eins pro Zeile)</label><textarea id="b-lines" rows="5" placeholder="Levi's 501 W32&#10;Levi's 517 W30; 14&#10;True Religion W33; 25"></textarea><span class="help">„; 14“ am Ende = dieses Teil hat 14 € gekostet. „; 14; 35“ = 14 € bezahlt, für 35 € auf Vinted. Der Rest vom Gesamtpreis wird gleichmäßig verteilt.</span></div>
     </div>
     <div class="bulk-preview" id="b-preview"></div>
     <p class="err" id="b-err" hidden></p>
@@ -715,6 +752,11 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
 <datalist id="brands"></datalist>
 <datalist id="sources"></datalist>
 <div class="toast" id="toast" role="status" hidden></div>
+<div class="notif" id="notif" role="status" aria-live="polite" hidden>
+  <span class="logo" aria-hidden="true">RC</span>
+  <div class="notif-top"><b>Resell Cockpit</b><span>jetzt</span></div>
+  <div class="notif-body" id="notif-body"></div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="config.js"></script>
@@ -1181,9 +1223,24 @@ function buildCsv() {
 let toastT = null;
 function toast(msg, action) {
   const t = $('#toast'); t.textContent = msg;
-  if (action) { const b = document.createElement('button'); b.type = 'button'; b.textContent = action.label; b.onclick = () => { t.hidden = true; action.fn(); }; t.append(b); }
-  t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, action ? 5500 : 3200);
+  const acts = action ? (Array.isArray(action) ? action : [action]) : [];
+  acts.forEach(a => { const b = document.createElement('button'); b.type = 'button'; b.textContent = a.label; b.onclick = () => { t.hidden = true; a.fn(); }; t.append(b); });
+  t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, acts.length ? 6500 : 3200);
 }
+
+/* ---------- Verkaufs-Nachricht (wie bei Shopify: Banner fährt oben rein) ---------- */
+let notifT = null;
+function showNotif(html) {
+  $('#notif-body').innerHTML = html;
+  const n = $('#notif'); n.hidden = true; void n.offsetWidth; n.hidden = false;
+  if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
+  clearTimeout(notifT); notifT = setTimeout(() => { n.hidden = true; }, 5000);
+}
+function cheer(sold) {
+  if (!sold.length) return;
+  showNotif('<strong>Sold</strong>');
+}
+$('#notif').addEventListener('click', () => { $('#notif').hidden = true; });
 
 /* ---------- quick capture ---------- */
 const QK = LS + '-quick';
@@ -1290,7 +1347,9 @@ function renderInventory() {
     return `<button type="button" class="inv-main" data-edit="${esc(i.id)}" title="Bearbeiten"><span class="it-t">${esc(i.title)}</span><span class="it-s">${meta}${chip(i)}</span></button>`; };
   const buy = i => `<div class="inv-buy"><b>${eur.format(cost(i))}</b><span>${i.buyDate ? fmtD(i.buyDate) : ''}</span></div>`;
   box.innerHTML = list.map(i => invView === 'lager'
-    ? `<div class="inv-row">${main(i)}${buy(i)}<div class="inv-act"><button type="button" class="btn primary sm" data-sell="${esc(i.id)}">Verkauft</button></div></div>`
+    ? `<div class="inv-row">${main(i)}${buy(i)}<div class="inv-act">${num(i.listPrice)
+        ? `<button type="button" class="btn primary sm" data-quicksell="${esc(i.id)}" title="Mit einem Tipp für ${esc(eur.format(num(i.listPrice)))} verkaufen">Verkauft · ${eur0.format(num(i.listPrice))}</button>`
+        : `<button type="button" class="btn primary sm" data-sell="${esc(i.id)}">Verkauft</button>`}</div></div>`
     : `<div class="inv-row">${main(i)}${buy(i)}<div class="inv-act"><b>${eur.format(num(i.soldPrice))}</b><span class="pill ${profit(i) >= 0 ? 'good' : 'bad'}">${profit(i) >= 0 ? '+' : ''}${eur.format(profit(i))} Gewinn</span></div></div>`
   ).join('');
 }
@@ -1336,17 +1395,19 @@ $('#btn-quick-side').addEventListener('click', openQuick);
 const round2 = x => Math.round(x * 100) / 100;
 function bulkLines() {
   return $('#b-lines').value.split('\n').map(s => s.trim()).filter(Boolean).map(line => {
-    const m = line.match(/^(.*?)\s*[;|\t]\s*(\d+(?:[.,]\d+)?)\s*€?$/);
-    return m && m[1] ? {title: m[1].trim(), price: num(m[2])} : {title: line, price: null};
+    // "Name; Einkaufspreis; Vinted-Preis" – beide Zahlen sind freiwillig
+    const m = line.match(/^(.*?)\s*[;|\t]\s*(\d+(?:[.,]\d+)?)?\s*€?(?:\s*[;|\t]\s*(\d+(?:[.,]\d+)?)\s*€?)?$/);
+    return m && m[1] ? {title: m[1].trim(), price: m[2] != null ? num(m[2]) : null, list: m[3] != null ? num(m[3]) : null} : {title: line, price: null, list: null};
   });
 }
 function bulkPlan() {
   const total = num($('#b-total').value), ship = num($('#b-ship').value), cat = $('#b-cat').value || 'Sonstiges';
   let lines = bulkLines(); const listed = lines.length > 0;
-  if (!listed) { const n = Math.min(300, Math.max(0, Math.floor(num($('#b-count').value)))); lines = Array.from({length: n}, (_, k) => ({title: `${cat} ${k + 1}`, price: null})); }
+  if (!listed) { const n = Math.min(300, Math.max(0, Math.floor(num($('#b-count').value)))); lines = Array.from({length: n}, (_, k) => ({title: `${cat} ${k + 1}`, price: null, list: null})); }
   const fixed = sum(lines.filter(l => l.price != null), l => l.price), open = lines.filter(l => l.price == null).length;
   const each = open ? Math.max(0, total - fixed) / open : 0, shipEach = lines.length ? ship / lines.length : 0;
-  return {cat, listed, total, ship, fixed, open, each, shipEach, count: lines.length, lines: lines.map(l => ({title: l.title, buy: round2(l.price != null ? l.price : each)}))};
+  const listAll = num($('#b-list').value) || null;
+  return {cat, listed, total, ship, fixed, open, each, shipEach, count: lines.length, lines: lines.map(l => ({title: l.title, buy: round2(l.price != null ? l.price : each), list: l.list || listAll}))};
 }
 function renderBulk() {
   const p = bulkPlan(), box = $('#b-preview');
@@ -1390,7 +1451,7 @@ $('#b-form').addEventListener('submit', e => {
   const src = $('#b-src').value.trim(), date = $('#b-date').value || TODAY;
   const note = `Großeinkauf${src ? ' bei ' + src : ''} am ${fmtD(date)} (${p.count} Teile, zusammen ${eur.format(p.total + p.ship)})`;
   const its = p.lines.map(l => ({id: newId(), title: l.title, brand: guessBrand(l.title), category: p.cat, size: '', source: src, buyDate: date,
-    buyPrice: l.buy, extraCost: round2(p.shipEach), listDate: '', listPrice: null, status: 'lager', soldPrice: null, soldDate: null, buyer: '', shippedDate: null, notes: note}));
+    buyPrice: l.buy, extraCost: round2(p.shipEach), listDate: l.list ? date : '', listPrice: l.list || null, status: 'lager', soldPrice: null, soldDate: null, buyer: '', shippedDate: null, notes: note}));
   own.push(...its); renderAll();
   const batch = 'b' + Date.now().toString(36);
   enqueue({t: 'upsertMany', id: batch, rows: its.map(toRow)});
@@ -1438,11 +1499,12 @@ $('#q-form').addEventListener('submit', e => {
   const praw = $('#q-price').value.trim(); if (!praw || !isFinite(parseFloat(praw.replace(',', '.')))) { $('#q-price').focus(); return err('Trag den Einkaufspreis ein (0, wenn geschenkt).'); }
   const typedSrc = $('#q-src-new').value.trim(); if (typedSrc) qState.src = typedSrc;
   qState.extra = num($('#q-extra').value);
+  const lp = num($('#q-list').value);
   const it = {id:newId(), title, brand: qBrand || guessBrand(title), category: qState.cat, size: $('#q-size').value.trim(), source: qState.src,
-    buyDate: TODAY, buyPrice: num(praw), extraCost: qState.extra, listDate:'', listPrice:null, status:'lager',
+    buyDate: TODAY, buyPrice: num(praw), extraCost: qState.extra, listDate: lp ? TODAY : '', listPrice: lp || null, status:'lager',
     soldPrice:null, soldDate:null, buyer:'', shippedDate:null, notes:''};
   saveQuickState(); saveItem(it); qSession.push(it);
-  $('#q-name').value = ''; $('#q-price').value = ''; $('#q-size').value = ''; $('#q-src-new').value = ''; $('#q-err').hidden = true; qBrand = '';
+  $('#q-name').value = ''; $('#q-price').value = ''; $('#q-list').value = ''; $('#q-size').value = ''; $('#q-src-new').value = ''; $('#q-err').hidden = true; qBrand = '';
   renderQuick(); $('#q-name').focus();
   toast(`„${title}“ gespeichert.`, {label:'Rückgängig', fn: () => { qSession = qSession.filter(x => x.id !== it.id); removeItem(it); if (!$('#quick').hidden) renderQuick(); }});
 });
@@ -1452,20 +1514,136 @@ const checkHash = () => {
 };
 window.addEventListener('hashchange', checkHash);
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-ship],[data-edit],[data-sell],[data-close],[data-copy]'); if (!t) return;
+  const t = e.target.closest('[data-ship],[data-edit],[data-sell],[data-quicksell],[data-close],[data-copy]'); if (!t) return;
   const find = id => items().find(i => i.id === id);
   if (t.dataset.ship) { const it = find(t.dataset.ship); if (it) { saveItem({...it, status:'versendet', shippedDate:TODAY}); toast('Als verschickt markiert.'); } }
+  else if (t.dataset.quicksell) {
+    // Ein Tipp: zum hinterlegten Vinted-Preis verkauft
+    const it = find(t.dataset.quicksell); if (!it) return;
+    const sold = {...it, status: 'zu_packen', soldPrice: num(it.listPrice), soldDate: TODAY, buyer: '', shippedDate: null};
+    saveItem(sold); cheer([sold]);
+    toast('Verkauf gespeichert.', [
+      {label: 'Anderer Preis', fn: () => { saveItem({...it}); openSell(it); }},
+      {label: 'Rückgängig', fn: () => saveItem({...it})}
+    ]);
+  }
   else if (t.dataset.edit) { const it = find(t.dataset.edit); if (it) openForm(it); }
   else if (t.dataset.sell) { const it = find(t.dataset.sell); if (it) openSell(it); }
   else if (t.hasAttribute('data-close')) closeForm();
   else if (t.dataset.copy) copyText($('#' + t.dataset.copy).textContent, t);
 });
 $('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeForm(); });
-document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (!$('#modal').hidden) closeForm(); else if (!$('#sell').hidden) closeSell(); else if (!$('#bulk').hidden) closeBulk(); else if (!$('#quick').hidden) closeQuick(); });
+document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (!$('#modal').hidden) closeForm(); else if (!$('#sell').hidden) closeSell(); else if (!$('#shot').hidden) closeShot(); else if (!$('#bulk').hidden) closeBulk(); else if (!$('#quick').hidden) closeQuick(); });
 $('#inv-q').addEventListener('input', renderInventory);
 $('#inv-view').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; invView = b.dataset.v; renderInventory(); });
 $('#inv-add').addEventListener('click', openQuick);
 $('#inv-bulk').addEventListener('click', openBulk);
+
+/* ---------- Screenshot einlesen: Texterkennung läuft nur im Browser, das Bild verlässt das Gerät nicht ---------- */
+let tessLoad = null, shotRows = [];
+function loadTesseract() {
+  if (window.Tesseract) return Promise.resolve();
+  if (!tessLoad) tessLoad = new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+    s.onload = res; s.onerror = () => { tessLoad = null; rej(new Error('load')); };
+    document.head.append(s);
+  });
+  return tessLoad;
+}
+const shotWords = s => String(s || '').toLowerCase().replace(/[’'`´]/g, '').replace(/[^a-z0-9äöüß]+/g, ' ').split(' ').filter(w => w.length > 1);
+// Aus dem erkannten Text: jede Zeile mit einem Euro-Preis ist ein Verkauf, der Titel steht in derselben oder einer Zeile darüber.
+function parseShot(text) {
+  const lines = String(text).split('\n').map(s => s.replace(/\s+/g, ' ').trim()).filter(Boolean);
+  const priceRe = /€\s*(\d{1,4}(?:[.,]\d{1,2})?)|(\d{1,4}(?:[.,]\d{1,2})?)\s*€/;
+  const skip = /(bestellung|versand|zugestellt|abgeschlossen|verkauft|gesendet|käufer|kaeufer|heute|gestern|schutz|gesamt|status|order|sold|shipped|delivered|completed|commande|vendu)/i;
+  const letters = s => (s.match(/[a-zäöüß]/gi) || []).length;
+  const out = [];
+  lines.forEach((ln, i) => {
+    const m = ln.match(priceRe); if (!m) return;
+    if (/schutz|gesamt|versand|protection|shipping/i.test(ln)) return; // Käuferschutz-/Versandzeilen sind keine Verkaufspreise
+    const price = num(m[1] || m[2]); if (!price) return;
+    let title = ln.replace(m[0], '').replace(/[|•·]/g, ' ').trim();
+    if (letters(title) < 3 || skip.test(title)) {
+      title = '';
+      for (let k = i - 1; k >= Math.max(0, i - 3); k--) { const c = lines[k]; if (priceRe.test(c) || skip.test(c)) continue; if (letters(c) >= 3) { title = c; break; } }
+    }
+    out.push({title: title || '(Titel nicht erkannt)', price});
+  });
+  return out.filter((r, i, a) => !(i && a[i - 1].title === r.title && a[i - 1].price === r.price));
+}
+// Jedem erkannten Verkauf das passendste Teil aus dem Lager zuordnen (gleiche Wörter, gleicher Preis)
+function matchShot(rows) {
+  const pool = items().filter(i => i.status === 'lager'), used = new Set();
+  return rows.map(r => {
+    const tw = shotWords(r.title); let best = null, bs = 0;
+    for (const it of pool) {
+      if (used.has(it.id)) continue;
+      const iw = new Set(shotWords([it.title, it.brand, it.size].join(' ')));
+      let s = tw.length ? tw.filter(w => iw.has(w)).length / tw.length : 0;
+      if (num(it.listPrice) && Math.abs(num(it.listPrice) - r.price) < 0.01) s += 0.25;
+      if (s > bs) { bs = s; best = it; }
+    }
+    if (best && bs >= 0.34) { used.add(best.id); return {...r, id: best.id}; }
+    return {...r, id: ''};
+  });
+}
+function renderShot() {
+  const pool = items().filter(i => i.status === 'lager');
+  const opts = sel => '<option value="">– keinem Teil zuordnen –</option>' + pool.map(i => `<option value="${esc(i.id)}"${i.id === sel ? ' selected' : ''}>${esc(i.title)}${i.size ? ' · ' + esc(i.size) : ''} (gekauft ${eur0.format(cost(i))})</option>`).join('');
+  $('#shot-list').innerHTML = shotRows.length ? shotRows.map((r, k) => `<div class="shot-row" data-k="${k}">
+      <input type="checkbox" class="sh-on"${r.id ? ' checked' : ''} aria-label="Übernehmen">
+      <div class="shot-main"><span class="it-t">${esc(r.title)}</span><select class="sh-item" aria-label="Passendes Teil">${opts(r.id)}</select></div>
+      <div class="price-mini"><input type="text" inputmode="decimal" class="sh-price" value="${esc(String(r.price).replace('.', ','))}" aria-label="Verkaufspreis"><span>€</span></div>
+    </div>`).join('') : '<div class="empty">Auf dem Bild wurden keine Preise gefunden. Versuch einen schärferen Screenshot der Liste „Verkauft“.</div>';
+  $('#shot-save').hidden = !shotRows.length; $('#shot-shipped-wrap').hidden = !shotRows.length;
+}
+function openShot() {
+  shotRows = []; $('#shot-list').innerHTML = ''; $('#shot-file').value = '';
+  ['#shot-status', '#shot-err', '#shot-save', '#shot-shipped-wrap'].forEach(id => { $(id).hidden = true; });
+  $('#shot').hidden = false;
+}
+const closeShot = () => { $('#shot').hidden = true; };
+$('#inv-shot').addEventListener('click', openShot);
+$('#shot').addEventListener('click', e => { if (e.target.id === 'shot' || e.target.closest('[data-shclose]')) closeShot(); });
+$('#shot-file').addEventListener('change', async e => {
+  const files = [...e.target.files]; if (!files.length) return;
+  const st = $('#shot-status'); st.hidden = false; $('#shot-err').hidden = true; $('#shot-list').innerHTML = ''; $('#shot-save').hidden = true; $('#shot-shipped-wrap').hidden = true;
+  try {
+    st.textContent = 'Lade Texterkennung … (beim ersten Mal ein paar Sekunden)';
+    await loadTesseract();
+    const worker = await Tesseract.createWorker(['deu', 'eng'], 1, {logger: m => { if (m.status === 'recognizing text') st.textContent = `Lese Bild … ${Math.round(m.progress * 100)} %`; }});
+    let rows = [];
+    for (const f of files) { const {data} = await worker.recognize(f); rows = rows.concat(parseShot(data.text)); }
+    await worker.terminate();
+    shotRows = matchShot(rows);
+    st.textContent = shotRows.length ? `${shotRows.length} Verkäufe erkannt, ${shotRows.filter(r => r.id).length} passen zu Teilen in deinem Lager. Bitte prüfen:` : '';
+    renderShot();
+  } catch {
+    st.hidden = true;
+    $('#shot-err').textContent = 'Das Bild konnte nicht gelesen werden. Prüf deine Internetverbindung (die Texterkennung wird beim ersten Mal geladen) und versuch es nochmal.';
+    $('#shot-err').hidden = false;
+  }
+});
+$('#shot-list').addEventListener('change', e => {
+  const row = e.target.closest('.shot-row'); if (!row) return;
+  if (e.target.classList.contains('sh-item')) row.querySelector('.sh-on').checked = !!e.target.value;
+});
+$('#shot-save').addEventListener('click', () => {
+  const shipped = $('#shot-shipped').checked, used = new Set(), before = [], after = [];
+  $$('#shot-list .shot-row').forEach(row => {
+    if (!row.querySelector('.sh-on').checked) return;
+    const id = row.querySelector('.sh-item').value, price = num(row.querySelector('.sh-price').value);
+    if (!id || used.has(id) || !price) return;
+    const it = items().find(i => i.id === id); if (!it || it.status !== 'lager') return;
+    used.add(id); before.push({...it});
+    const sold = {...it, status: shipped ? 'versendet' : 'zu_packen', soldPrice: price, soldDate: TODAY, buyer: '', shippedDate: shipped ? TODAY : null};
+    saveItem(sold); after.push(sold);
+  });
+  if (!before.length) { $('#shot-err').textContent = 'Wähle bei mindestens einem Verkauf das passende Teil aus deinem Lager.'; $('#shot-err').hidden = false; return; }
+  closeShot(); cheer(after);
+  toast(`${before.length} ${before.length === 1 ? 'Verkauf' : 'Verkäufe'} übernommen.`, {label: 'Rückgängig', fn: () => before.forEach(it => saveItem(it))});
+});
 $('#s-price').addEventListener('input', renderSellCalc);
 let sellDown = false;
 $('#sell').addEventListener('pointerdown', e => { sellDown = e.target.id === 'sell'; });
@@ -1476,9 +1654,8 @@ $('#s-form').addEventListener('submit', e => {
   const raw = $('#s-price').value.trim();
   if (!raw || !isFinite(parseFloat(raw.replace(',', '.')))) { $('#s-err').textContent = 'Für wie viel hast du es verkauft?'; $('#s-err').hidden = false; $('#s-price').focus(); return; }
   const sold = {...it, status: 'zu_packen', soldPrice: num(raw), soldDate: $('#s-date').value || TODAY, buyer: $('#s-buyer').value.trim().replace(/^@/, ''), shippedDate: null};
-  const p = profit(sold);
-  closeSell(); saveItem(sold);
-  toast(`Verkauft! ${p >= 0 ? '+' : ''}${eur.format(p)} Gewinn`, {label: 'Rückgängig', fn: () => saveItem({...it})});
+  closeSell(); saveItem(sold); cheer([sold]);
+  toast('Verkauf gespeichert.', {label: 'Rückgängig', fn: () => saveItem({...it})});
 });
 $('#f-status').addEventListener('change', toggleSold);
 $('#del-zone').addEventListener('click', e => {
