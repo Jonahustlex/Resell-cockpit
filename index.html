@@ -2,12 +2,16 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
+<!-- Sicherheitsregel: Daten dürfen nur an die eigene Seite, an Supabase und an jsDelivr (Programmcode) gehen -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net blob:; worker-src 'self' blob:; connect-src 'self' https://qfqsmrzbtllmwkemseei.supabase.co https://cdn.jsdelivr.net blob: data:; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#070809">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Cockpit">
 <meta name="robots" content="noindex">
+<meta name="description" content="Resell Cockpit – privates Dashboard für Umsatz, Gewinn, Lager und Versand im Vinted-Reselling.">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="data:image/png;base64,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">
 <link rel="apple-touch-icon" href="data:image/png;base64,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">
@@ -49,7 +53,8 @@ svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-widt
 /* shell */
 .shell{display:grid;grid-template-columns:244px minmax(0,1fr);gap:14px;padding:14px;min-height:100vh;max-width:1480px;margin:0 auto}
 .side{position:sticky;top:14px;height:calc(100vh - 28px);background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:16px;box-shadow:var(--shadow);overflow-y:auto}
-.side-brand{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:12px;background:var(--card-2)}
+.side-brand{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:12px;background:var(--card-2);width:100%;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.mtop-home{display:flex;align-items:center;gap:10px;flex:1;min-width:0;background:none;border:0;padding:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
 .side-brand strong{display:block;font-size:14px;line-height:1.2}
 .side-brand span{font-size:12px;color:var(--ink-3)}
 .logo{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(145deg,var(--green),var(--green-2));color:var(--green-ink);font-weight:800;font-size:13px;letter-spacing:.02em;box-shadow:0 0 18px -4px rgba(47,196,205,.6);flex:none}
@@ -137,7 +142,7 @@ svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .chart{position:relative;width:100%}
 .chart svg{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y}
 .chart .gl{stroke:var(--line);stroke-width:1}
-.chart .yl,.chart .xl{fill:var(--ink-3);font-size:11px;font-family:var(--f-mono)}
+.chart .yl,.chart .xl{fill:var(--ink-3);font-size:12.5px;font-family:var(--f-mono)}
 .chart .ln{fill:none;stroke:var(--green);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;filter:drop-shadow(0 0 6px rgba(47,196,205,.55))}
 .chart .ln-prev{fill:none;stroke:#4A515B;stroke-width:1.5;stroke-dasharray:4 4;stroke-linejoin:round}
 .chart .area{fill:url(#chGrad)}
@@ -179,7 +184,8 @@ svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .chart .b1{stop-color:#007782}
 .chart .ln-prev.light{stroke:#C9CED6;opacity:.75;stroke-dasharray:3 5;stroke-width:1.6;stroke-linecap:round}
 .chart .dot-prev{fill:#C9CED6}
-@media (max-width:640px){.perf-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.perf-side{align-items:flex-start}}
+@media (max-width:640px){.perf-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.perf-side{align-items:flex-start}
+  .panel.perf{padding-inline:10px}.chart-box{padding:12px 4px 2px;margin-inline:-4px}}
 .tip{position:absolute;pointer-events:none;background:#15181C;border:1px solid var(--line-2);color:var(--ink);padding:10px 12px;border-radius:10px;font-size:12.5px;min-width:170px;box-shadow:0 12px 30px -10px rgba(0,0,0,.8);z-index:3}
 .tip b{display:block;margin-bottom:4px;font-size:13px;font-weight:600}
 .tip .tr{display:flex;justify-content:space-between;gap:16px;font-variant-numeric:tabular-nums}
@@ -503,10 +509,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
 </div>
 <div class="shell" id="app" hidden>
   <aside class="side" aria-label="Navigation">
-    <div class="side-brand">
+    <button type="button" class="side-brand" data-home aria-label="Resell Cockpit – zur Übersicht">
       <span class="logo" aria-hidden="true">RC</span>
       <div><strong>Resell Cockpit</strong><span>Vinted-Reselling</span></div>
-    </div>
+    </button>
     <nav class="nav" id="nav">
       <span class="nav-label">Menü</span>
       <button type="button" data-nav="perf"><svg class="i" viewBox="0 0 24 24"><path d="M6 20V11M12 20V5M18 20v-7"/></svg>Performance</button>
@@ -530,7 +536,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
 
   <main class="main">
     <div class="mtop">
-      <span class="logo" aria-hidden="true">RC</span><strong>Resell Cockpit</strong>
+      <button type="button" class="mtop-home" data-home aria-label="Resell Cockpit – zur Übersicht"><span class="logo" aria-hidden="true">RC</span><strong>Resell Cockpit</strong></button>
       <button type="button" class="icon-btn" id="btn-logout-m" aria-label="Abmelden" title="Abmelden"><svg class="i" viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg></button>
     </div>
     <div class="main-inner reveal">
@@ -756,7 +762,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
   <div class="notif-body" id="notif-body"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o" crossorigin="anonymous"></script>
 <script src="config.js"></script>
 <script>
 (() => {
@@ -1034,8 +1040,10 @@ function renderChart() {
   const prev = B.prev ? B.list.map(b => b.pFrom ? val(b.pFrom, b.pTo) : null) : null;
 
   // Skala
-  const box = $('#chart'); const W = Math.max(260, Math.round(box.clientWidth || 600)), H = W > 700 ? 380 : W > 480 ? 300 : 260;
-  const pl = 44, pr = 8, pt = 12, pb = 26, iw = W - pl - pr, ih = H - pt - pb;
+  // Groß: füllt den Großteil des Bildschirms (Handy ~55 %, Computer ~62 % der Höhe)
+  const box = $('#chart'), W = Math.max(260, Math.round(box.clientWidth || 600)), wide = W > 700;
+  const H = Math.round(Math.min(780, Math.max(wide ? 460 : 360, (window.innerHeight || 800) * (wide ? .62 : .55))));
+  const pl = 50, pr = 8, pt = 14, pb = 30, iw = W - pl - pr, ih = H - pt - pb;
   const vals = [...cur, ...(prev || [])].filter(v => v != null);
   const lo0 = Math.min(0, ...vals), hi0 = Math.max(chMetric === 'n' ? 2 : 20, ...vals);
   let step = niceStep((hi0 - lo0) / 4); if (chMetric === 'n') step = Math.max(1, step);
@@ -1048,7 +1056,7 @@ function renderChart() {
     const v = lo + k * step;
     grid += `<line class="gl" x1="${pl}" x2="${W - pr}" y1="${y(v)}" y2="${y(v)}"/><text class="yl" x="${pl - 8}" y="${y(v) + 4}" text-anchor="end">${chMetric === 'n' ? v : eur0.format(v)}</text>`;
   }
-  const nLab = Math.min(N, W > 560 ? 7 : 4);
+  const nLab = Math.min(N, W > 560 ? 7 : W > 380 ? 4 : 3);
   const labIdx = [...new Set(Array.from({length: nLab}, (_, k) => Math.round(k * (N - 1) / Math.max(1, nLab - 1))))];
   const xl = labIdx.map(i => `<text class="xl" x="${x(i)}" y="${H - 6}" text-anchor="${i === 0 && band < 40 ? 'start' : i === N - 1 && band < 40 ? 'end' : 'middle'}">${esc(B.list[i].label)}</text>`).join('');
 
@@ -1073,7 +1081,7 @@ function renderChart() {
 
   let body = '';
   if (chType === 'bar') {
-    const bw = Math.max(3, Math.min(48, band * 0.8)), r = Math.min(7, bw / 2);
+    const bw = Math.max(3, Math.min(64, band * 0.8)), r = Math.min(8, bw / 2);
     body = cur.map((v, i) => {
       if (v == null || v === 0) return '';
       const top = v > 0 ? y(v) : y(0), h = Math.max(1, Math.abs(y(v) - y(0)));
@@ -1472,6 +1480,7 @@ function navGo(e) {
 }
 $('#nav').addEventListener('click', navGo);
 $('#mnav').addEventListener('click', navGo);
+$$('[data-home]').forEach(b => b.addEventListener('click', () => navGo({target: $('#nav [data-nav="top"]')})));
 $('#fab').addEventListener('click', openQuick);
 $('#quick').addEventListener('click', e => {
   if (e.target.id === 'quick' || e.target.closest('[data-qclose]')) return closeQuick();
@@ -1544,6 +1553,7 @@ function loadTesseract() {
   if (!tessLoad) tessLoad = new Promise((res, rej) => {
     const s = document.createElement('script');
     s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+    s.integrity = 'sha384-GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F'; s.crossOrigin = 'anonymous';
     s.onload = res; s.onerror = () => { tessLoad = null; rej(new Error('load')); };
     document.head.append(s);
   });
@@ -1685,6 +1695,7 @@ $('#btn-csv').addEventListener('click', () => {
     const url = URL.createObjectURL(new Blob(['﻿' + buildCsv()], {type: 'text/csv;charset=utf-8'}));
     const a = document.createElement('a'); a.href = url; a.download = 'resell-cockpit-' + TODAY + '.csv';
     document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 3000);
+    toast('Liste heruntergeladen – öffnen mit Excel oder Numbers.');
   } catch {
     $('#csv-text').value = buildCsv(); $('#csv-fallback').hidden = false; $('#csv-text').focus(); $('#csv-text').select();
   }
