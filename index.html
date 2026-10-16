@@ -361,6 +361,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
 .fab svg.i{width:26px;height:26px;stroke-width:2.4}
 .add-sheet{max-width:440px;gap:10px}
 .reset-sheet{max-width:440px}
+.draft-note{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0;padding:9px 12px;border-radius:10px;font-size:13px;color:var(--ink-2);background:var(--green-soft);border:1px solid var(--green-line)}
+.draft-note[hidden]{display:none}
+.linkbtn{background:none;border:0;padding:0;color:var(--green);text-decoration:underline;cursor:pointer;font:inherit;font-weight:600;white-space:nowrap}
+.draft-badge{font-style:normal;font-size:11px;font-weight:500;color:var(--warn);border:1px solid rgba(245,196,81,.35);border-radius:6px;padding:1px 6px;margin-left:8px;vertical-align:2px}
 .reset-zone{display:flex;justify-content:center;padding-top:8px}
 .reset-zone .btn{color:var(--ink-3);font-size:12.5px}
 .add-opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px;border:1px solid var(--line-2);border-radius:14px;background:var(--card-2);color:var(--ink);cursor:pointer;font:inherit}
@@ -680,6 +684,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
 <div class="modal quick" id="quick" hidden>
   <form class="sheet qs" id="q-form" autocomplete="off" role="dialog" aria-modal="true" aria-labelledby="q-title">
     <div class="sheet-head"><h2 id="q-title">Schnell erfassen</h2><button type="button" class="btn ghost" data-qclose>Fertig</button></div>
+    <p class="draft-note" id="q-draft" hidden><span>Dein angefangener Eintrag ist wieder da.</span><button type="button" class="linkbtn" data-draft-clear="quick">Verwerfen</button></p>
     <div class="field"><label for="q-name">Was hast du gekauft?</label><input type="text" id="q-name" placeholder="z. B. Levi's 517 Bootcut" enterkeyhint="next" autocapitalize="sentences"></div>
     <div class="chips" id="q-sugg" aria-label="Häufige Artikel"></div>
     <div class="field"><label for="q-price">Einkaufspreis</label><div class="price-in"><input type="text" inputmode="decimal" id="q-price" placeholder="0,00" enterkeyhint="done"><span>€</span></div></div>
@@ -740,6 +745,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
 <div class="modal" id="bulk" hidden>
   <form class="sheet" id="b-form" autocomplete="off" role="dialog" aria-modal="true" aria-labelledby="b-title">
     <div class="sheet-head"><h2 id="b-title">Großeinkauf erfassen</h2><button type="button" class="btn ghost" data-bclose>Schließen</button></div>
+    <p class="draft-note" id="b-draft" hidden><span>Dein angefangener Großeinkauf ist wieder da.</span><button type="button" class="linkbtn" data-draft-clear="bulk">Verwerfen</button></p>
     <p class="note">Für Ware vom Lieferanten: Gib den Gesamtpreis ein, und das Cockpit verteilt ihn auf alle Teile.</p>
     <div class="form-grid">
       <div class="field"><label for="b-src">Lieferant</label><input type="text" id="b-src" list="sources" placeholder="z. B. Großhändler"></div>
@@ -770,8 +776,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
 <div class="modal quick" id="addmenu" hidden>
   <div class="sheet qs add-sheet" role="dialog" aria-modal="true" aria-labelledby="add-title">
     <div class="sheet-head"><h2 id="add-title">Ware hinzufügen</h2><button type="button" class="btn ghost" data-aclose>Schließen</button></div>
-    <button type="button" class="add-opt" data-add="one"><span class="ico"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span><strong>Ein Teil</strong><small>Schnell eintragen, z. B. direkt am Stand</small></span></button>
-    <button type="button" class="add-opt" data-add="bulk"><span class="ico"><svg class="i" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg></span><span><strong>Großeinkauf</strong><small>Viele Teile vom Lieferanten auf einmal</small></span></button>
+    <button type="button" class="add-opt" data-add="one"><span class="ico"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span><strong>Ein Teil<em class="draft-badge" data-badge="quick" hidden>angefangen</em></strong><small>Schnell eintragen, z. B. direkt am Stand</small></span></button>
+    <button type="button" class="add-opt" data-add="bulk"><span class="ico"><svg class="i" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg></span><span><strong>Großeinkauf<em class="draft-badge" data-badge="bulk" hidden>angefangen</em></strong><small>Viele Teile vom Lieferanten auf einmal</small></span></button>
     <button type="button" class="add-opt" data-add="shot"><span class="ico"><svg class="i" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span><span><strong>Aus Screenshot</strong><small>Bestellung oder Liste einlesen lassen</small></span></button>
   </div>
 </div>
@@ -1279,11 +1285,32 @@ function renderQuick() {
   const total = sum(qSession, i => num(i.buyPrice) + num(i.extraCost));
   $('#q-session').innerHTML = qSession.length ? `<span>${qSession.length} ${qSession.length === 1 ? 'Teil' : 'Teile'} erfasst</span><span class="mono">${eur.format(total)} inkl. Nebenkosten</span>` : '';
 }
+/* ---------- Angefangene Eingaben merken (nur auf diesem Gerät), damit nichts verloren geht, wenn die App zugeht ---------- */
+const DRAFT = {
+  quick: {fields: ['q-name', 'q-price', 'q-list', 'q-size', 'q-src-new', 'q-extra'], real: ['q-name', 'q-price', 'q-list', 'q-size', 'q-src-new']},
+  bulk: {fields: ['b-src', 'b-date', 'b-total', 'b-ship', 'b-list', 'b-count', 'b-cat', 'b-lines'], real: ['b-total', 'b-ship', 'b-list', 'b-count', 'b-lines']}
+};
+const draftKey = k => LS + '-draft-' + k;
+const loadDraft = k => { try { return JSON.parse(lsGet(draftKey(k)) || 'null'); } catch { return null; } };
+const clearDraft = k => { try { localStorage.removeItem(draftKey(k)); } catch {} };
+function saveDraft(k) {
+  const d = {}; DRAFT[k].fields.forEach(id => { d[id] = $('#' + id).value; });
+  if (!DRAFT[k].real.some(id => String(d[id] || '').trim())) return clearDraft(k); // nichts Eigenes eingetippt → kein Entwurf
+  if (k === 'quick') { d.cat = qState.cat; d.src = qState.src; }
+  d.at = Date.now(); lsSet(draftKey(k), JSON.stringify(d));
+}
+function restoreDraft(k) {
+  const d = loadDraft(k); if (!d) return false;
+  DRAFT[k].fields.forEach(id => { if (d[id] != null) $('#' + id).value = d[id]; });
+  if (k === 'quick') { if (d.cat) qState.cat = d.cat; if (d.src != null) qState.src = d.src; qBrand = guessBrand(d['q-name'] || ''); }
+  return true;
+}
 function openQuick() {
   if (!$('#modal').hidden) closeForm();
   qSession = []; qBrand = '';
-  $('#q-name').value = ''; $('#q-price').value = ''; $('#q-size').value = ''; $('#q-src-new').value = '';
+  $('#q-name').value = ''; $('#q-price').value = ''; $('#q-list').value = ''; $('#q-size').value = ''; $('#q-src-new').value = '';
   $('#q-extra').value = String(qState.extra).replace('.', ','); $('#q-err').hidden = true;
+  $('#q-draft').hidden = !restoreDraft('quick');
   renderQuick(); $('#quick').hidden = false;
   setTimeout(() => $('#q-name').focus(), 30);
 }
@@ -1425,8 +1452,9 @@ function openBulk() {
   if (!$('#quick').hidden) closeQuick(); if (!$('#modal').hidden) closeForm();
   fillSelect($('#b-cat'), CATS, qState.cat || 'Jeans');
   $('#b-src').value = qState.src || ''; $('#b-date').value = TODAY;
-  ['b-total', 'b-ship', 'b-count', 'b-lines'].forEach(id => { $('#' + id).value = ''; });
+  ['b-total', 'b-ship', 'b-list', 'b-count', 'b-lines'].forEach(id => { $('#' + id).value = ''; });
   $('#b-err').hidden = true;
+  $('#b-draft').hidden = !restoreDraft('bulk');
   $('#sources').innerHTML = [...new Set(items().map(i => i.source).filter(Boolean))].map(s => `<option value="${esc(s)}">`).join('');
   renderBulk(); $('#bulk').hidden = false; setTimeout(() => $('#b-src').focus(), 30);
 }
@@ -1454,7 +1482,7 @@ $('#b-form').addEventListener('submit', e => {
   const batch = 'b' + Date.now().toString(36);
   enqueue({t: 'upsertMany', id: batch, rows: its.map(toRow)});
   if (src) qState.src = src; qState.cat = p.cat; saveQuickState();
-  closeBulk();
+  clearDraft('bulk'); closeBulk();
   const ids = its.map(i => i.id);
   toast(`${its.length} Teile angelegt.`, {label: 'Rückgängig', fn: () => {
     own = own.filter(x => !ids.includes(x.id)); renderAll(); enqueue({t: 'deleteMany', id: batch + '-del', ids});
@@ -1503,6 +1531,7 @@ $('#q-form').addEventListener('submit', e => {
     soldPrice:null, soldDate:null, buyer:'', shippedDate:null, notes:''};
   saveQuickState(); saveItem(it); qSession.push(it);
   $('#q-name').value = ''; $('#q-price').value = ''; $('#q-list').value = ''; $('#q-size').value = ''; $('#q-src-new').value = ''; $('#q-err').hidden = true; qBrand = '';
+  clearDraft('quick'); $('#q-draft').hidden = true;
   renderQuick(); $('#q-name').focus();
   toast(`„${title}“ gespeichert.`, {label:'Rückgängig', fn: () => { qSession = qSession.filter(x => x.id !== it.id); removeItem(it); if (!$('#quick').hidden) renderQuick(); }});
 });
@@ -1701,7 +1730,21 @@ $('#r-form').addEventListener('submit', e => {
 });
 
 // Ein „+“ für alles: Auswahl Ein Teil / Großeinkauf / Screenshot
-function openAdd() { $('#addmenu').hidden = false; setTimeout(() => $('#addmenu .add-opt').focus(), 30); }
+function openAdd() {
+  $$('[data-badge]').forEach(b => { b.hidden = !loadDraft(b.dataset.badge); }); // „angefangen“, wenn ein Entwurf wartet
+  $('#addmenu').hidden = false; setTimeout(() => $('#addmenu .add-opt').focus(), 30);
+}
+// Entwürfe bei jeder Eingabe sofort merken
+$('#q-form').addEventListener('input', () => saveDraft('quick'));
+$('#quick').addEventListener('click', e => { if (e.target.closest('[data-qs],[data-qp],[data-qc],[data-qsrc]')) setTimeout(() => saveDraft('quick'), 0); });
+$('#b-form').addEventListener('input', () => saveDraft('bulk'));
+$('#b-form').addEventListener('change', () => saveDraft('bulk'));
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-draft-clear]'); if (!b) return;
+  const k = b.dataset.draftClear; clearDraft(k);
+  if (k === 'quick') openQuick(); else openBulk();
+  toast('Entwurf verworfen.');
+});
 const closeAdd = () => { $('#addmenu').hidden = true; };
 ['#btn-add', '#btn-quick-side', '#fab', '#inv-add', '#mnav-add'].forEach(s => $(s).addEventListener('click', openAdd));
 $('#addmenu').addEventListener('click', e => {
@@ -1753,12 +1796,12 @@ $('#shot-save').addEventListener('click', () => {
     .map(r => ({title: shotClean(r.querySelector('.sh-title').value), price: num(r.querySelector('.sh-price').value)})).filter(r => r.title);
   if (!rows.length) { $('#shot-err').textContent = 'Wähle mindestens ein Teil mit Namen aus.'; $('#shot-err').hidden = false; return; }
   const kind = shotKind, ship = shotShip, f = v => v.toFixed(2).replace('.', ',');
-  closeShot(); openBulk();
+  clearDraft('bulk'); closeShot(); openBulk();
   $('#b-lines').value = rows.map(r => r.price ? (kind === 'buy' ? `${r.title}; ${f(r.price)}` : `${r.title}; ; ${f(r.price)}`) : r.title).join('\n');
   const allPriced = kind === 'buy' && rows.every(r => r.price);
   if (allPriced) $('#b-total').value = sum(rows, r => r.price).toFixed(2);
   if (kind === 'buy' && ship) $('#b-ship').value = ship.toFixed(2);
-  renderBulk();
+  renderBulk(); saveDraft('bulk'); // auch die Screenshot-Ergebnisse bleiben erhalten, falls die App zugeht
   if (!allPriced) setTimeout(() => $('#b-total').focus(), 60);
   toast(allPriced ? `${rows.length} Teile übernommen. Lieferant und Kategorie prüfen, dann „Teile anlegen“.` : `${rows.length} Teile übernommen. Trag noch den Gesamtpreis ein, den du bezahlt hast.`);
 });
