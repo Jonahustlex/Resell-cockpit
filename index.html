@@ -128,9 +128,10 @@ svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .row{display:grid;gap:14px}
 .row.two{grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);align-items:start}
 .row.three{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start}
+.row.pair{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
 .view{display:flex;flex-direction:column;gap:16px;min-width:0}
 .mnav{display:none}
-@media (max-width:1000px){.row.two,.row.three{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:1000px){.row.two,.row.three,.row.pair{grid-template-columns:minmax(0,1fr)}}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px 18px;display:flex;flex-direction:column;gap:14px;min-width:0;box-shadow:var(--shadow)}
 .panel-head{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;justify-content:space-between;padding-bottom:14px;margin-inline:-18px;padding-inline:18px;border-bottom:1px solid var(--line)}
 .ph-title{display:flex;align-items:center;gap:11px;min-width:0}
@@ -168,13 +169,7 @@ svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .perf-type svg.i{width:16px;height:16px}
 .lg-dot{display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--green);margin-right:7px;box-shadow:0 0 6px var(--green)}
 .lg-dot.prev{background:#C9CED6;box-shadow:none}
-.perf-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;border-bottom:1px solid var(--line)}
-.perf-stats button{background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;padding:4px 2px 10px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:3px;color:inherit;min-width:0}
-.perf-stats span{font-size:12px;color:var(--ink-3)}
-.perf-stats b{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.perf-stats button:hover b{color:var(--ink)}
-.perf-stats button[aria-pressed="true"]{border-bottom-color:var(--green)}
-.perf-stats button[aria-pressed="true"] b{color:var(--ink)}
+.perf-lab{width:100%;font-size:13px;color:var(--ink-3)}
 .chart-box{position:relative;border:1px solid rgba(47,196,205,.55);border-radius:16px;padding:14px 12px 4px;background:linear-gradient(180deg,rgba(47,196,205,.045),rgba(0,0,0,.25));box-shadow:0 0 0 1px rgba(47,196,205,.08),0 0 30px -4px rgba(47,196,205,.35),inset 0 0 34px -12px rgba(47,196,205,.3)}
 .perf-unit{position:absolute;top:8px;right:14px;font-size:11px;color:var(--ink-3)}
 .chart .bar{fill:url(#barGrad);filter:drop-shadow(0 0 6px rgba(47,196,205,.45));transition:fill .15s}
@@ -184,7 +179,7 @@ svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .chart .b1{stop-color:#007782}
 .chart .ln-prev.light{stroke:#C9CED6;opacity:.75;stroke-dasharray:3 5;stroke-width:1.6;stroke-linecap:round}
 .chart .dot-prev{fill:#C9CED6}
-@media (max-width:640px){.perf-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.perf-side{align-items:flex-start}
+@media (max-width:640px){.perf-side{align-items:flex-start}
   .panel.perf{padding-inline:10px}.chart-box{padding:12px 4px 2px;margin-inline:-4px}}
 .tip{position:absolute;pointer-events:none;background:#15181C;border:1px solid var(--line-2);color:var(--ink);padding:10px 12px;border-radius:10px;font-size:12.5px;min-width:170px;box-shadow:0 12px 30px -10px rgba(0,0,0,.8);z-index:3}
 .tip b{display:block;margin-bottom:4px;font-size:13px;font-weight:600}
@@ -340,6 +335,11 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
 .shot-main{display:flex;flex-direction:column;gap:6px;min-width:0}
 .shot-main .it-t{overflow-wrap:anywhere}
 .shot-main select{font-size:14px;padding:7px 9px}
+.shot-main .sh-title{font-size:14.5px;padding:7px 9px}
+.sh-warn{font-size:12px;color:var(--warn)}
+.shot-kind{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.shot-sum{font-size:13.5px;color:var(--ink-2);padding-top:10px}
+#b-shot{align-self:flex-start;margin-top:6px}
 .price-mini{display:flex;align-items:center;gap:4px;color:var(--ink-3)}
 .price-mini input{padding:7px 8px;text-align:right;font-variant-numeric:tabular-nums}
 .shot-check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--ink-2)}
@@ -357,7 +357,16 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
 .bulk-preview.empty-p{border-color:var(--line-2);background:var(--card-2)}
 .bulk-preview ul{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:var(--ink-3);max-height:120px;overflow-y:auto}
 .big-btn{justify-content:center;padding:13px;font-size:15.5px;width:100%}
-.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;display:none;padding:14px 20px;border-radius:14px;font-size:15px}
+.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;display:none;width:56px;height:56px;padding:0;border-radius:50%;box-shadow:0 10px 28px -8px rgba(47,196,205,.7)}
+.fab svg.i{width:26px;height:26px;stroke-width:2.4}
+.add-sheet{max-width:440px;gap:10px}
+.reset-sheet{max-width:440px}
+.reset-zone{display:flex;justify-content:center;padding-top:8px}
+.reset-zone .btn{color:var(--ink-3);font-size:12.5px}
+.add-opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px;border:1px solid var(--line-2);border-radius:14px;background:var(--card-2);color:var(--ink);cursor:pointer;font:inherit}
+.add-opt:hover,.add-opt:focus-visible{border-color:var(--green-line)}
+.add-opt strong{display:block;font-size:15px;font-weight:600}
+.add-opt small{display:block;color:var(--ink-3);font-size:13px;margin-top:2px}
 
 /* Login: links Spruch + leuchtende Kurve, rechts Milchglas-Karte */
 .gate{position:relative;min-height:100vh;min-height:100dvh;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,420px);gap:clamp(32px,6vw,88px);align-items:center;padding:48px clamp(16px,6vw,88px);max-width:1320px;margin:0 auto}
@@ -436,16 +445,22 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
   .mtop{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;background:rgba(7,8,9,.85);backdrop-filter:blur(10px)}
   .mtop strong{flex:1}
   .main-inner{padding:18px 16px 170px}
-  .mnav{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;z-index:16;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:rgba(10,12,14,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
+  .mnav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:16;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:rgba(10,12,14,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
   .mnav button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border:0;background:transparent;color:var(--ink-3);font-size:11px;cursor:pointer;border-radius:10px}
   .mnav button[aria-current="page"]{color:var(--green);background:var(--green-soft)}
   .mnav svg.i{width:20px;height:20px}
+  .mnav .mnav-add{justify-content:center;background:none}
+  .mnav-add .plus{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,var(--green),var(--green-2));color:var(--green-ink);box-shadow:0 6px 20px -6px rgba(47,196,205,.75)}
+  .mnav-add .plus svg.i{width:24px;height:24px;stroke-width:2.4}
+  #inv .panel-head{flex-wrap:nowrap}
+  #inv .inv-actions{flex:none;flex-wrap:nowrap}
+  #inv-add{display:none} /* auf dem Handy reicht das „+“ unten in der Leiste */
+  #inv h2{white-space:nowrap}
   .fab{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
 }
 @media (max-width:640px){
   .modal.quick{align-items:flex-end;padding:0}
   .qs{border-radius:18px 18px 0 0;margin:0;max-height:100%;overflow-y:auto;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
-  .fab{display:inline-flex}
   .toast{bottom:calc(144px + env(safe-area-inset-bottom,0px))}
   .kpis{gap:10px}
   .kcard{padding:14px 12px 12px}
@@ -521,11 +536,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
       <button type="button" data-nav="sold"><svg class="i" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>Verkauft</button>
     </nav>
     <div class="side-card">
-      <span class="ico"><svg class="i" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span>
-      <strong>Gerade am Einkaufen?</strong>
-      <p>Trag deine Teile in 10 Sekunden ein, direkt am Stand.</p>
-      <button type="button" class="btn primary" id="btn-quick-side">Schnell erfassen</button>
-      <button type="button" class="btn" id="btn-bulk-side">Großeinkauf</button>
+      <button type="button" class="btn primary" id="btn-quick-side"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Ware hinzufügen</button>
     </div>
     <div class="side-user">
       <span class="avatar" id="user-initials">·</span>
@@ -543,12 +554,11 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
       <header class="top" id="top">
         <div>
           <h1 id="greeting">Hallo.</h1>
-          <p>Behalte Verkäufe, Lager und Gewinn im Blick. <span id="today-label"></span></p>
+          <p><span id="today-label"></span></p>
         </div>
         <div class="top-actions">
           <span class="save-chip"><span class="dot" id="save-dot"></span><span id="save-mode">Gespeichert</span></span>
-          <button type="button" class="btn" id="btn-bulk"><svg class="i" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg>Großeinkauf</button>
-          <button type="button" class="btn primary" id="btn-add"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Einkauf erfassen</button>
+          <button type="button" class="btn primary" id="btn-add"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Ware hinzufügen</button>
         </div>
       </header>
 
@@ -581,7 +591,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
             <div class="legend" id="ch-legend"></div>
           </div>
         </div>
-        <div class="perf-stats" id="ch-metric" role="group" aria-label="Kennzahl"></div>
         <div class="chart-box"><span class="perf-unit" id="perf-unit"></span><div class="chart" id="chart"></div></div>
       </section>
       </div>
@@ -594,9 +603,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
           <div class="ph-title"><span class="ico"><svg class="i" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg></span><h2 id="h-inv">Meine Ware</h2></div>
           <div class="inv-actions">
             <button type="button" class="icon-btn" id="btn-csv" title="Liste herunterladen (für Excel)" aria-label="Liste herunterladen"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></button>
-            <button type="button" class="btn" id="inv-shot" title="Verkäufe aus einem Vinted-Screenshot einlesen"><svg class="i" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Screenshot</button>
-            <button type="button" class="btn" id="inv-bulk"><svg class="i" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg>Großeinkauf</button>
-            <button type="button" class="btn primary" id="inv-add"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Einkauf</button>
+            <button type="button" class="btn primary" id="inv-add"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Hinzufügen</button>
           </div>
         </div>
         <div class="inv-tools">
@@ -615,11 +622,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
         <div class="inv-list" id="inv-list"></div>
       </section>
 
-        <div class="row three">
+        <div class="row pair">
         <section class="panel" aria-labelledby="h-pack">
           <div class="panel-head">
             <div class="ph-title"><span class="ico"><svg class="i" viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg></span><h2 id="h-pack">Zu packen <span class="mono muted" id="pack-count"></span></h2></div>
-            <span class="small muted">Innerhalb von 5 Werktagen</span>
           </div>
           <div class="pack-list" id="pack-list"></div>
         </section>
@@ -628,23 +634,15 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
           <div id="goal-body"></div>
           <div class="inline-field"><label for="goal-input">Gewinnziel pro Monat</label><input type="number" id="goal-input" min="0" step="10" inputmode="decimal"> €</div>
         </section>
-        <section class="panel" aria-labelledby="h-cap">
-          <div class="panel-head"><div class="ph-title"><span class="ico"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="9" r="6"/><path d="M15.7 9.6a6 6 0 1 1-6.1 6.1"/></svg></span><h2 id="h-cap">Gewinn aufteilen</h2></div></div>
-          <div id="cap-body"></div>
-          <div class="meter-row">
-            <div class="lab"><label for="reinvest">Anteil für neue Ware</label><span class="mono" id="reinvest-val"></span></div>
-            <input type="range" id="reinvest" min="0" max="100" step="5">
-          </div>
-        </section>
         </div>
+        <div class="reset-zone"><button type="button" class="btn ghost sm" id="btn-reset">Cockpit zurücksetzen</button></div>
       </div>
-
-      <footer class="foot"><strong>Gewinn</strong> = Verkaufspreis minus Einkaufspreis minus Nebenkosten (vor Steuern).</footer>
     </div>
   </main>
   <nav class="mnav" id="mnav" aria-label="Menü">
     <button type="button" data-nav="perf"><svg class="i" viewBox="0 0 24 24"><path d="M6 20V11M12 20V5M18 20v-7"/></svg><span>Performance</span></button>
     <button type="button" data-nav="top" aria-current="page"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Übersicht</span></button>
+    <button type="button" class="mnav-add" id="mnav-add" aria-label="Ware hinzufügen"><span class="plus"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
     <button type="button" data-nav="lager"><svg class="i" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg><span>Lager</span></button>
     <button type="button" data-nav="sold"><svg class="i" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg><span>Verkauft</span></button>
   </nav>
@@ -722,15 +720,21 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
 </div>
 <div class="modal quick" id="shot" hidden>
   <div class="sheet qs shot-sheet" role="dialog" aria-modal="true" aria-labelledby="shot-title">
-    <div class="sheet-head"><h2 id="shot-title">Verkäufe aus Screenshot</h2><button type="button" class="btn ghost" data-shclose>Schließen</button></div>
-    <p class="note">Mach in der Vinted-App einen Screenshot deiner <strong>verkauften Artikel</strong> und wähle ihn hier aus. Das Bild wird <strong>nur auf diesem Gerät gelesen</strong> und nirgendwo hochgeladen. Prüf die Liste, bevor du speicherst.</p>
+    <div class="sheet-head"><h2 id="shot-title">Neue Ware aus Screenshot</h2><button type="button" class="btn ghost" data-shclose>Schließen</button></div>
+    <p class="note">Screenshot von deiner <strong>Bestellung beim Lieferanten</strong>, einer Rechnung oder einer Liste. Das Cockpit liest Namen und Preise und legt daraus <strong>neue Teile im Lager</strong> an. Das Bild wird <strong>nur auf diesem Gerät gelesen</strong> und nirgendwo hochgeladen.</p>
+    <div class="shot-kind">
+      <span class="small muted">Der Preis auf dem Bild ist:</span>
+      <div class="seg" id="shot-kind" role="group" aria-label="Welcher Preis steht auf dem Bild?">
+        <button type="button" data-shk="buy" aria-pressed="true">Einkaufspreis</button>
+        <button type="button" data-shk="list" aria-pressed="false">Vinted-Preis</button>
+      </div>
+    </div>
     <label class="btn primary big-btn" for="shot-file"><svg class="i" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Screenshot auswählen</label>
     <input type="file" id="shot-file" class="sr" accept="image/*" multiple>
     <p class="small muted" id="shot-status" hidden></p>
     <div id="shot-list"></div>
-    <label class="shot-check" id="shot-shipped-wrap" hidden><input type="checkbox" id="shot-shipped" checked> Diese Pakete sind schon verschickt</label>
     <p class="err" id="shot-err" hidden></p>
-    <button type="button" class="btn primary big-btn" id="shot-save" hidden>Als verkauft speichern</button>
+    <button type="button" class="btn primary big-btn" id="shot-save" hidden>Weiter: Teile anlegen</button>
   </div>
 </div>
 <div class="modal" id="bulk" hidden>
@@ -745,14 +749,32 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
       <div class="field"><label for="b-list">Vinted-Preis pro Teil (€)</label><input type="number" id="b-list" step="1" min="0" inputmode="decimal" placeholder="freiwillig"><span class="help">Dann reicht später ein Tipp auf „Verkauft“</span></div>
       <div class="field"><label for="b-count">Anzahl Teile</label><input type="number" id="b-count" step="1" min="1" max="300" inputmode="numeric" placeholder="z. B. 20"><span class="help">Oder unten die Teile auflisten</span></div>
       <div class="field"><label for="b-cat">Kategorie</label><select id="b-cat"></select></div>
-      <div class="field wide"><label for="b-lines">Teile auflisten (freiwillig, eins pro Zeile)</label><textarea id="b-lines" rows="5" placeholder="Levi's 501 W32&#10;Levi's 517 W30; 14&#10;True Religion W33; 25"></textarea><span class="help">„; 14“ am Ende = dieses Teil hat 14 € gekostet. „; 14; 35“ = 14 € bezahlt, für 35 € auf Vinted. Der Rest vom Gesamtpreis wird gleichmäßig verteilt.</span></div>
+      <div class="field wide"><label for="b-lines">Teile auflisten (freiwillig, eins pro Zeile)</label><textarea id="b-lines" rows="5" placeholder="Levi's 501 W32&#10;Levi's 517 W30; 14&#10;True Religion W33; 25"></textarea><button type="button" class="btn sm" id="b-shot"><svg class="i" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Aus Screenshot einlesen</button><span class="help">„; 14“ am Ende = dieses Teil hat 14 € gekostet. „; 14; 35“ = 14 € bezahlt, für 35 € auf Vinted. Der Rest vom Gesamtpreis wird gleichmäßig verteilt.</span></div>
     </div>
     <div class="bulk-preview" id="b-preview"></div>
     <p class="err" id="b-err" hidden></p>
     <div class="sheet-foot"><div class="r"><button type="button" class="btn" data-bclose>Abbrechen</button><button type="submit" class="btn primary" id="b-save">Teile anlegen</button></div></div>
   </form>
 </div>
-<button type="button" class="btn primary fab" id="fab" hidden>+ Schnell erfassen</button>
+<button type="button" class="btn primary fab" id="fab" aria-label="Ware hinzufügen" title="Ware hinzufügen" hidden><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+<div class="modal quick" id="reset" hidden>
+  <form class="sheet qs reset-sheet" id="r-form" role="dialog" aria-modal="true" aria-labelledby="r-title" autocomplete="off">
+    <div class="sheet-head"><h2 id="r-title">Cockpit zurücksetzen</h2><button type="button" class="btn ghost" data-rclose>Abbrechen</button></div>
+    <p class="note" id="r-text"></p>
+    <button type="button" class="btn" id="r-csv"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Vorher Liste sichern (Excel)</button>
+    <div class="field"><label for="r-confirm">Zum Bestätigen <strong>LÖSCHEN</strong> eintippen</label><input type="text" id="r-confirm" autocapitalize="characters" spellcheck="false"></div>
+    <p class="err" id="r-err" hidden></p>
+    <button type="submit" class="btn danger big-btn" id="r-go">Alles löschen</button>
+  </form>
+</div>
+<div class="modal quick" id="addmenu" hidden>
+  <div class="sheet qs add-sheet" role="dialog" aria-modal="true" aria-labelledby="add-title">
+    <div class="sheet-head"><h2 id="add-title">Ware hinzufügen</h2><button type="button" class="btn ghost" data-aclose>Schließen</button></div>
+    <button type="button" class="add-opt" data-add="one"><span class="ico"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span><strong>Ein Teil</strong><small>Schnell eintragen, z. B. direkt am Stand</small></span></button>
+    <button type="button" class="add-opt" data-add="bulk"><span class="ico"><svg class="i" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg></span><span><strong>Großeinkauf</strong><small>Viele Teile vom Lieferanten auf einmal</small></span></button>
+    <button type="button" class="add-opt" data-add="shot"><span class="ico"><svg class="i" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span><span><strong>Aus Screenshot</strong><small>Bestellung oder Liste einlesen lassen</small></span></button>
+  </div>
+</div>
 <datalist id="brands"></datalist>
 <datalist id="sources"></datalist>
 <div class="toast" id="toast" role="status" hidden></div>
@@ -811,7 +833,7 @@ function stats(list, from, to) {
 let own = [];
 let profile = {goal:500, reinvest:60};
 let period = 'month', tab = 'sales', groupBy = 'category';
-let chMetric = 'rev', chType = 'bar'; // Performance-Grafik: Kennzahl und Diagramm-Art
+const chMetric = 'rev'; let chType = 'bar'; // Performance-Grafik zeigt nur den Umsatz; Diagramm-Art umschaltbar
 /* ---------- Supabase ---------- */
 const CFG = window.RESELL_CONFIG || {};
 let sb = null, session = null, lastLoad = 0;
@@ -845,7 +867,7 @@ async function loadData() {
 const LS = 'resell-cockpit-web-v1';
 const lsGet = k => { try { return localStorage.getItem(k); } catch { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
-try { const ui = JSON.parse(lsGet(LS + '-ui') || 'null'); if (ui) { period = ui.period || period; tab = ui.tab || tab; groupBy = ui.groupBy || groupBy; if (['rev', 'profit', 'n', 'avg'].includes(ui.chMetric)) chMetric = ui.chMetric; if (['bar', 'line'].includes(ui.chType)) chType = ui.chType; } } catch {}
+try { const ui = JSON.parse(lsGet(LS + '-ui') || 'null'); if (ui) { period = ui.period || period; tab = ui.tab || tab; groupBy = ui.groupBy || groupBy; if (['bar', 'line'].includes(ui.chType)) chType = ui.chType; } } catch {}
 const saveUi = () => lsSet(LS + '-ui', JSON.stringify({period, tab, groupBy, chMetric, chType}));
 
 const isEmpty = () => own.length === 0;
@@ -862,7 +884,7 @@ const opKey = o => o.t === 'settings' ? 'settings' : 'item:' + o.id;
 let flushing = false, retryTimer = null;
 function setSync(state) {
   $('#save-dot').className = 'dot ' + (state === 'saved' ? 'on' : state === 'saving' ? 'warn' : 'bad');
-  $('#save-mode').textContent = state === 'saved' ? 'Alles gespeichert'
+  $('#save-mode').textContent = state === 'saved' ? 'Gespeichert'
     : state === 'saving' ? 'Speichert …'
     : `Nicht gespeichert: ${queue.length} Änderung${queue.length === 1 ? '' : 'en'} warten (z. B. kein Internet). Wird automatisch nachgeholt.`;
 }
@@ -966,8 +988,9 @@ function renderKPIs() {
   const stockSeries = B.map(b => inStockAt(b.to > TODAY ? TODAY : b.to));
   const prevStock = R.pf ? inStockAt(R.pt) : null;
   const dir = (cur, prev, series) => prev != null && Math.abs(prev) > 0.01 ? cur >= prev : series[series.length - 1] >= series[0];
+  // Kacheln bewusst schlicht: Name, Zahl, Mini-Kurve, Vergleich – keine Erklärtexte
   const card = (label, val, delta, sub, series, up) =>
-    `<div class="kcard"><span class="kc-label">${label}</span><div class="kc-row"><span class="kc-val">${val}</span>${sparkSvg(series, up)}</div>${delta}<span class="kc-sub">${sub}</span></div>`;
+    `<div class="kcard"><span class="kc-label">${label}</span><div class="kc-row"><span class="kc-val">${val}</span>${sparkSvg(series, up)}</div>${delta}</div>`;
   const teile = n => `${n} ${n === 1 ? 'Teil' : 'Teile'}`;
   const sr = per('rev'), sp = per('profit'), sn = per('n');
   $('#kpis').innerHTML =
@@ -1023,13 +1046,9 @@ function renderChart() {
   const mval = s => chMetric === 'avg' ? (s.n ? s.rev / s.n : 0) : s[chMetric];
   const fmtT = (k, v) => k === 'n' ? String(v) : eur.format(v);
 
-  // Kopf: große Summe + Vergleich, darunter die Kennzahl-Kacheln
+  // Kopf: nur der Umsatz im gewählten Zeitraum + Vergleich
   const s = stats(all, R.from, R.to), ps = R.pf ? stats(all, R.pf, R.pt) : null;
-  $('#perf-total').innerHTML = `<b>${fmtT(chMetric, mval(s))}</b>${ps ? deltaHtml(mval(s), mval(ps), R.vs) : ''}`;
-  $('#ch-metric').innerHTML = [['rev', 'Umsatz'], ['n', 'Verkäufe'], ['profit', 'Gewinn'], ['avg', 'Ø Verkaufspreis']].map(([k, l]) => {
-    const v = k === 'avg' ? (s.n ? s.rev / s.n : null) : s[k];
-    return `<button type="button" data-m="${k}" aria-pressed="${k === chMetric}"><span>${l}</span><b>${v == null ? '–' : fmtT(k, v)}</b></button>`;
-  }).join('');
+  $('#perf-total').innerHTML = `<span class="perf-lab">Umsatz · ${esc(B.cur)}</span><b>${fmtT(chMetric, mval(s))}</b>${ps ? deltaHtml(mval(s), mval(ps), R.vs) : ''}`;
   $$('#ch-type button').forEach(b => b.setAttribute('aria-pressed', b.dataset.c === chType));
   $('#ch-legend').innerHTML = `<span><i class="lg-dot"></i>${esc(B.cur)}</span>` + (B.prev ? `<span><i class="lg-dot prev"></i>${esc(B.prev)}</span>` : '');
   $('#perf-unit').textContent = 'pro ' + B.unit;
@@ -1145,7 +1164,7 @@ function renderPack() {
     const pill = left < 0 ? `<span class="pill bad">überfällig</span>` : left === 0 ? `<span class="pill bad">heute</span>` : left <= 2 ? `<span class="pill warn">noch ${left} Werktag${left > 1 ? 'e' : ''}</span>` : `<span class="pill good">noch ${left} Werktage</span>`;
     return `<div class="label">
       <span class="t">${esc(i.title)}</span>
-      <span class="m">${esc([i.size, i.buyer ? '@' + i.buyer : ''].filter(Boolean).join(' · '))} · verkauft ${fmtD(i.soldDate)}</span>
+      <span class="m">${esc([i.size, i.buyer ? '@' + i.buyer : '', 'verkauft ' + fmtD(i.soldDate)].filter(Boolean).join(' · '))}</span>
       <div class="r"><span class="mono" style="font-weight:600">${eur.format(num(i.soldPrice))}</span>${pill}</div>
       <div class="acts"><span class="small muted">Versand bis ${esc(fmtDW(dl))}</span><button type="button" class="btn sm primary" data-ship="${esc(i.id)}">Verschickt</button></div>
     </div>`;
@@ -1169,28 +1188,6 @@ function renderGoal() {
     <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="big">${eur0.format(s.profit)}</span><span class="muted mono">von ${eur0.format(goal)} Gewinn</span></div>
     <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(prog * 100)}" aria-label="Fortschritt Monatsziel"><i style="width:${prog * 100}%"></i></div>
     <p class="note" style="color:var(--ink-2)">${msg}</p>`;
-}
-
-function renderCapital() {
-  const t = today0(); const all = items();
-  const s = stats(all, iso(new Date(t.getFullYear(), t.getMonth(), 1)), TODAY);
-  const stock = all.filter(i => i.status === 'lager');
-  const s30 = stats(all, iso(addDays(t, -29)), TODAY);
-  const reach = s30.n ? stock.length / (s30.n / 30) : null;
-  const rp = Math.round(num(profile.reinvest));
-  $('#reinvest').value = rp; $('#reinvest-val').textContent = rp + ' %';
-  const base = Math.max(0, s.profit);
-  let tip = '';
-  if (reach != null) tip = reach > 60 ? 'Tipp: Du hast gerade mehr Ware, als du verkaufst. Kauf erstmal weniger ein.'
-    : reach < 20 ? 'Tipp: Dein Lager wird leer. Zeit für neuen Einkauf.'
-    : 'Tipp: Einkauf und Verkauf passen gut zusammen.';
-  $('#cap-body').innerHTML = `
-    <p class="small muted" style="margin:0">Dein Gewinn diesen Monat: <strong style="color:var(--ink)">${eur0.format(s.profit)}</strong></p>
-    <dl class="kv">
-      <dt>Für neue Ware</dt><dd style="color:var(--denim-ink)">${eur0.format(base * rp / 100)}</dd>
-      <dt>Zum Sparen</dt><dd>${eur0.format(base * (100 - rp) / 100)}</dd>
-    </dl>
-    ${tip ? `<p class="note" style="color:var(--ink-2)">${tip}</p>` : ''}`;
 }
 
 
@@ -1309,7 +1306,7 @@ function renderStatus() {
   $('#user-name').textContent = name || 'Du';
   $('#user-initials').textContent = (name || 'Du').charAt(0).toUpperCase();
   $('#user-mail').textContent = mail;
-  $('#today-label').textContent = 'Heute ist ' + today0().toLocaleDateString('de-BE', {weekday:'long', day:'numeric', month:'long'}) + '.';
+  $('#today-label').textContent = today0().toLocaleDateString('de-BE', {weekday:'long', day:'numeric', month:'long'});
   $('#demo-banner').hidden = !isEmpty();
 }
 function setNav(key) { $$('#nav button, #mnav button').forEach(b => b.dataset.nav === key ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current')); }
@@ -1386,16 +1383,13 @@ const closeSell = () => { $('#sell').hidden = true; selling = null; };
 
 function renderAll() {
   $$('#period button').forEach(b => b.setAttribute('aria-pressed', b.dataset.p === period));
-  renderStatus(); renderKPIs(); renderInventory(); renderChart(); renderPack(); renderGoal(); renderCapital();
+  renderStatus(); renderKPIs(); renderInventory(); renderChart(); renderPack(); renderGoal();
 }
 
 /* ---------- events ---------- */
 $('#period').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; period = b.dataset.p; saveUi(); renderAll(); });
-$('#ch-metric').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; chMetric = b.dataset.m; saveUi(); renderChart(); });
 $('#ch-type').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; chType = b.dataset.c; saveUi(); renderChart(); });
-$('#btn-add').addEventListener('click', openQuick);
 $('#btn-add-2').addEventListener('click', openQuick);
-$('#btn-quick-side').addEventListener('click', openQuick);
 
 /* ---------- Großeinkauf: Gesamtpreis auf viele Teile verteilen ---------- */
 const round2 = x => Math.round(x * 100) / 100;
@@ -1437,8 +1431,6 @@ function openBulk() {
   renderBulk(); $('#bulk').hidden = false; setTimeout(() => $('#b-src').focus(), 30);
 }
 const closeBulk = () => { $('#bulk').hidden = true; };
-$('#btn-bulk').addEventListener('click', openBulk);
-$('#btn-bulk-side').addEventListener('click', openBulk);
 $('#btn-bulk-2').addEventListener('click', openBulk);
 $('#q-bulk').addEventListener('click', openBulk);
 $('#b-form').addEventListener('input', renderBulk);
@@ -1481,7 +1473,6 @@ function navGo(e) {
 $('#nav').addEventListener('click', navGo);
 $('#mnav').addEventListener('click', navGo);
 $$('[data-home]').forEach(b => b.addEventListener('click', () => navGo({target: $('#nav [data-nav="top"]')})));
-$('#fab').addEventListener('click', openQuick);
 $('#quick').addEventListener('click', e => {
   if (e.target.id === 'quick' || e.target.closest('[data-qclose]')) return closeQuick();
   const b = e.target.closest('button'); if (!b) return;
@@ -1540,11 +1531,9 @@ document.addEventListener('click', e => {
   else if (t.dataset.copy) copyText($('#' + t.dataset.copy).textContent, t);
 });
 $('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeForm(); });
-document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (!$('#modal').hidden) closeForm(); else if (!$('#sell').hidden) closeSell(); else if (!$('#shot').hidden) closeShot(); else if (!$('#bulk').hidden) closeBulk(); else if (!$('#quick').hidden) closeQuick(); });
+document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (!$('#reset').hidden) closeReset(); else if (!$('#addmenu').hidden) closeAdd(); else if (!$('#modal').hidden) closeForm(); else if (!$('#sell').hidden) closeSell(); else if (!$('#shot').hidden) closeShot(); else if (!$('#bulk').hidden) closeBulk(); else if (!$('#quick').hidden) closeQuick(); });
 $('#inv-q').addEventListener('input', renderInventory);
 $('#inv-view').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; invView = b.dataset.v; renderInventory(); });
-$('#inv-add').addEventListener('click', openQuick);
-$('#inv-bulk').addEventListener('click', openBulk);
 
 /* ---------- Screenshot einlesen: Texterkennung läuft nur im Browser, das Bild verlässt das Gerät nicht ---------- */
 let tessLoad = null, shotRows = [];
@@ -1559,98 +1548,219 @@ function loadTesseract() {
   });
   return tessLoad;
 }
-const shotWords = s => String(s || '').toLowerCase().replace(/[’'`´]/g, '').replace(/[^a-z0-9äöüß]+/g, ' ').split(' ').filter(w => w.length > 1);
-// Aus dem erkannten Text: jede Zeile mit einem Euro-Preis ist ein Verkauf, der Titel steht in derselben oder einer Zeile darüber.
-function parseShot(text) {
-  const lines = String(text).split('\n').map(s => s.replace(/\s+/g, ' ').trim()).filter(Boolean);
-  const priceRe = /€\s*(\d{1,4}(?:[.,]\d{1,2})?)|(\d{1,4}(?:[.,]\d{1,2})?)\s*€/;
-  const skip = /(bestellung|versand|zugestellt|abgeschlossen|verkauft|gesendet|käufer|kaeufer|heute|gestern|schutz|gesamt|status|order|sold|shipped|delivered|completed|commande|vendu)/i;
-  const letters = s => (s.match(/[a-zäöüß]/gi) || []).length;
-  const out = [];
-  lines.forEach((ln, i) => {
-    const m = ln.match(priceRe); if (!m) return;
-    if (/schutz|gesamt|versand|protection|shipping/i.test(ln)) return; // Käuferschutz-/Versandzeilen sind keine Verkaufspreise
-    const price = num(m[1] || m[2]); if (!price) return;
-    let title = ln.replace(m[0], '').replace(/[|•·]/g, ' ').trim();
-    if (letters(title) < 3 || skip.test(title)) {
-      title = '';
-      for (let k = i - 1; k >= Math.max(0, i - 3); k--) { const c = lines[k]; if (priceRe.test(c) || skip.test(c)) continue; if (letters(c) >= 3) { title = c; break; } }
-    }
-    out.push({title: title || '(Titel nicht erkannt)', price});
-  });
-  return out.filter((r, i, a) => !(i && a[i - 1].title === r.title && a[i - 1].price === r.price));
+let shotKind = 'buy', shotShip = 0, shotLines = [], shotWords = [];
+const SHOT_TOTAL = /(zwischen ?summe|gesamt|summe|total|subtotal|mwst|\bust\b|steuer|\btax\b|rabatt|discount|gutschein|coupon|guthaben|balance|saldo|zahlung|payment|bezahlt|käuferschutz|kaeuferschutz|schutz|protection|gebühr|gebuehr|\bfee\b)/i;
+const SHOT_SHIP = /(versand|shipping|lieferung|delivery|porto|zoll|customs|fracht)/i;
+const SHOT_STATUS = /(bestellung|zugestellt|abgeschlossen|verkauft|gesendet|versendet|käufer|kaeufer|heute|gestern|status|order|\bsold\b|shipped|delivered|completed|commande|vendu|nachricht|bewert)/i;
+const SHOT_QTY = /(?:^|\s)(\d{1,2})\s?[x×]\s|(?:^|\s)[x×*]\s?(\d{1,2})(?=\s|$)|(?:menge|anzahl|qty|stk\.?|stück)\s*:?\s*(\d{1,3})/i;
+const SHOT_SIZE = /^\s*(?:(?:gr(?:ö|oe)?(?:ß|ss)e|size|gr\.)\s*:?\s*)?(?:(?:xxs|xs|s|m|l|xl|xxl|xxxl|\d{2,3})(?:\s?[-\/]\s?(?:xs|s|m|l|xl|xxl|xxxl|\d{2,3}))?|w\s?\d{2}(?:\s?l\s?\d{2})?)\s*$/i;
+// Preise: „12,50 €“, „€ 12“, „EUR 12.50“ oder „12,50“ (ohne €-Zeichen nur mit 2 Nachkommastellen). Typische Lesefehler O→0 und l/I→1 werden korrigiert.
+const SHOT_PRICE = /(?:€|\beur\b)\s*([0-9OolI]{1,5}(?:[.,][0-9Oo]{1,2})?)|([0-9OolI]{1,5}(?:[.,][0-9Oo]{1,2})?)\s*(?:€|\beur\b)|(?:^|\s)(\d{1,4},\d{2})(?=\s|$)/gi;
+function shotPrices(line) {
+  const out = []; let m; SHOT_PRICE.lastIndex = 0;
+  while ((m = SHOT_PRICE.exec(line))) {
+    const raw = m[1] || m[2] || m[3] || ''; if (!/\d/.test(raw)) continue;
+    const v = num(raw.replace(/[Oo]/g, '0').replace(/[lI]/g, '1'));
+    if (v > 0 && v < 10000) out.push({v, text: m[0]});
+  }
+  return out;
 }
-// Jedem erkannten Verkauf das passendste Teil aus dem Lager zuordnen (gleiche Wörter, gleicher Preis)
-function matchShot(rows) {
-  const pool = items().filter(i => i.status === 'lager'), used = new Set();
-  return rows.map(r => {
-    const tw = shotWords(r.title); let best = null, bs = 0;
-    for (const it of pool) {
-      if (used.has(it.id)) continue;
-      const iw = new Set(shotWords([it.title, it.brand, it.size].join(' ')));
-      let s = tw.length ? tw.filter(w => iw.has(w)).length / tw.length : 0;
-      if (num(it.listPrice) && Math.abs(num(it.listPrice) - r.price) < 0.01) s += 0.25;
-      if (s > bs) { bs = s; best = it; }
+const shotLetters = s => (s.match(/[a-zäöüß]/gi) || []).length;
+const shotClean = s => String(s).replace(SHOT_QTY, ' ').replace(/\bEUR\b/gi, ' ').replace(/[;|\t•·_~«»<>{}\[\]©®™€$£]+/g, ' ').replace(/^[^A-Za-zÄÖÜäöü0-9]+/, '').replace(/[\s\-–—:,.]+$/, '').replace(/\s+/g, ' ').trim().slice(0, 90);
+// Aus den erkannten Zeilen: jede Zeile mit einem Preis ist ein Teil. Der Name steht in derselben Zeile oder bis zu 3 Zeilen darüber.
+function parseShot(lines, words) {
+  (words || []).forEach(w => { w.used = false; });
+  const L = lines.map(l => ({t: String(l.text || '').replace(/\s+/g, ' ').trim(), c: l.conf == null ? 100 : l.conf, y0: l.y0, y1: l.y1, img: l.img || 0})).filter(l => l.t);
+  // Gehört die Zeile darüber noch zum selben Artikel? Nein, wenn ein anderes Bild oder ein großer Abstand (z. B. Seitenüberschrift) dazwischen liegt.
+  const sameBlock = (up, down) => up.img === down.img && (up.y1 == null || down.y0 == null || down.y0 - up.y1 <= 1.6 * Math.max(8, up.y1 - up.y0));
+  const out = [], usedTitle = new Set(), usedPrice = new Set(); shotShip = 0;
+  L.forEach((ln, i) => {
+    if (usedPrice.has(i)) return;
+    let ps = shotPrices(ln.t);
+    const q = ln.t.match(SHOT_QTY), qty = q ? Math.max(1, Math.min(50, +(q[1] || q[2] || q[3]))) : 1;
+    // Eine Zeile ist ein Teil, wenn sie einen Preis hat – oder (z. B. Versand-Mail ohne Preise) eine Anzahl wie „× 1“ / „2x“ plus einen Namen.
+    if (!ps.length && !(q && shotLetters(ln.t.replace(SHOT_QTY, ' ')) >= 3 && !SHOT_STATUS.test(ln.t) && !SHOT_TOTAL.test(ln.t))) return;
+    if (!ps.length) {
+      // Preis steht vielleicht allein in der Zeile darunter
+      for (let k = i + 1; k <= Math.min(L.length - 1, i + 2) && sameBlock(L[k - 1], L[k]); k++) {
+        const pk = shotPrices(L[k].t); if (pk.length && shotLetters(L[k].t.replace(pk[0].text, '')) < 3) { ps = pk; usedPrice.add(k); break; }
+      }
     }
-    if (best && bs >= 0.34) { used.add(best.id); return {...r, id: best.id}; }
-    return {...r, id: ''};
+    let rest = ln.t; ps.forEach(p => { rest = rest.replace(p.text, ' '); });
+    if (ps.length && SHOT_SHIP.test(ln.t) && shotLetters(rest) < 30) { shotShip = round2(shotShip + ps[ps.length - 1].v); return; } // Versand/Zoll ist kein Teil
+    if (SHOT_TOTAL.test(ln.t)) return;                                                                                              // Summen, Gebühren, Käuferschutz
+    // Erster Preis = Artikelpreis (bei Vinted steht danach oft der Preis inkl. Käuferschutz). Bei „2x … 12 € 24 €“ ist der erste der Stückpreis.
+    let price = ps.length ? ps[0].v : 0, note = '';
+    if (qty > 1 && ps.length === 1) { note = `${qty} Stück, zusammen ${eur.format(price)}`; price = round2(price / qty); }
+    else if (qty > 1) note = `${qty} Stück`;
+    let title = shotClean(rest), conf = ln.c;
+    // Größe in der Zeile darunter (z. B. „M-L“, „W32 L34“, „Gr. 38“) an den Namen hängen
+    // (Reste von Produktbildern wie „0“ oder „@“ dazwischen werden übersprungen)
+    let size = '';
+    if (shotLetters(title) >= 3) for (let k = i + 1; k <= Math.min(L.length - 1, i + 3) && sameBlock(L[k - 1], L[k]) && !usedTitle.has(k); k++) {
+      if (SHOT_SIZE.test(L[k].t)) { size = L[k].t; usedTitle.add(k); break; }
+      if (!/^[^A-Za-zÄÖÜäöü]{0,3}$/.test(L[k].t)) break;
+    }
+    // Zweiter Versuch über einzelne Wörter (falls Bild und Größe zu einer Zeile verschmolzen sind): Größe direkt unter dem Namen
+    if (!size && shotLetters(title) >= 3 && ln.y1 != null) {
+      const lh = Math.max(8, ln.y1 - ln.y0), w = (words || []).find(w => !w.used && w.img === ln.img && w.y0 >= ln.y1 - lh * .3 && w.y0 <= ln.y1 + lh * 1.8 && SHOT_SIZE.test(w.text));
+      if (w) { w.used = true; size = w.text; }
+    }
+    if (size) title += ' ' + size.replace(/^\s*(gr(ö|oe)?(ß|ss)e|size|gr\.)\s*:?\s*/i, '').trim().toUpperCase();
+    if (shotLetters(title) < 3 || SHOT_STATUS.test(title)) {
+      // Artikel-Block über dem Preis einsammeln (bis zur Status-/Preiszeile vom Teil davor); der Titel ist die OBERSTE Zeile
+      // (z. B. „Levi's 501 W32“ über „W32 · Levi's“).
+      const block = [];
+      for (let k = i - 1; k >= Math.max(0, i - 3); k--) {
+        const c = L[k]; if (!sameBlock(c, L[k + 1]) || usedTitle.has(k) || shotPrices(c.t).length || SHOT_STATUS.test(c.t) || SHOT_TOTAL.test(c.t) || SHOT_SHIP.test(c.t)) break;
+        if (shotLetters(c.t) >= 3) block.unshift(k);
+      }
+      title = '';
+      if (block.length) { const k = block[0]; title = shotClean(L[k].t); conf = Math.min(conf, L[k].c); block.forEach(b => usedTitle.add(b)); }
+    }
+    usedTitle.add(i);
+    const row = {title: title || '', price, conf, note};
+    if (qty > 1) for (let n = 0; n < qty; n++) out.push({...row, note: `${n + 1} von ${qty}${note.includes('zusammen') ? ' · ' + note.split(', ')[1] : ''}`});
+    else out.push(row);
   });
+  return out;
+}
+// Bild vor dem Lesen aufbereiten: vergrößern, Graustufen, Kontrast strecken, dunklen Modus umdrehen → deutlich weniger Lesefehler
+async function prepImage(file) {
+  let src;
+  try { src = await createImageBitmap(file); }
+  catch { src = await new Promise((res, rej) => { const im = new Image(), u = URL.createObjectURL(file); im.onload = () => { URL.revokeObjectURL(u); res(im); }; im.onerror = rej; im.src = u; }); }
+  const w0 = src.width, h0 = src.height;
+  const s = Math.min(Math.min(2.5, Math.max(1, 1700 / w0)), Math.sqrt(16e6 / (w0 * h0)));
+  const w = Math.max(1, Math.round(w0 * s)), h = Math.max(1, Math.round(h0 * s));
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d', {willReadFrequently: true}); g.imageSmoothingQuality = 'high'; g.drawImage(src, 0, 0, w, h);
+  if (src.close) src.close();
+  const img = g.getImageData(0, 0, w, h), d = img.data, hist = new Uint32Array(256), n = w * h;
+  let mean = 0;
+  for (let i = 0; i < d.length; i += 4) { const y = (d[i] * 299 + d[i + 1] * 587 + d[i + 2] * 114) / 1000 | 0; d[i] = y; hist[y]++; mean += y; }
+  mean /= n;
+  let lo = 0, hi = 255, acc = 0;
+  for (let v = 0; v < 256; v++) { acc += hist[v]; if (acc >= n * .01) { lo = v; break; } }
+  acc = 0; for (let v = 255; v >= 0; v--) { acc += hist[v]; if (acc >= n * .01) { hi = v; break; } }
+  const inv = mean < 128, k = 255 / Math.max(1, hi - lo);
+  for (let i = 0; i < d.length; i += 4) { let y = (d[i] - lo) * k; y = y < 0 ? 0 : y > 255 ? 255 : y; if (inv) y = 255 - y; d[i] = d[i + 1] = d[i + 2] = y; }
+  g.putImageData(img, 0, 0);
+  return c;
 }
 function renderShot() {
-  const pool = items().filter(i => i.status === 'lager');
-  const opts = sel => '<option value="">– keinem Teil zuordnen –</option>' + pool.map(i => `<option value="${esc(i.id)}"${i.id === sel ? ' selected' : ''}>${esc(i.title)}${i.size ? ' · ' + esc(i.size) : ''} (gekauft ${eur0.format(cost(i))})</option>`).join('');
+  const st = $('#shot-status');
+  if (shotLines.length) {
+    st.hidden = !shotRows.length;
+    st.textContent = `${shotRows.length} ${shotRows.length === 1 ? 'Teil' : 'Teile'} erkannt${shotShip ? ` · Versand/Zoll ${eur.format(shotShip)}` : ''}. Prüf Namen und Preise:`;
+  }
+  const warn = r => r.conf < 75 || !r.title ? '<span class="sh-warn">⚠ Unsicher gelesen – bitte prüfen</span>' : '';
   $('#shot-list').innerHTML = shotRows.length ? shotRows.map((r, k) => `<div class="shot-row" data-k="${k}">
-      <input type="checkbox" class="sh-on"${r.id ? ' checked' : ''} aria-label="Übernehmen">
-      <div class="shot-main"><span class="it-t">${esc(r.title)}</span><select class="sh-item" aria-label="Passendes Teil">${opts(r.id)}</select></div>
-      <div class="price-mini"><input type="text" inputmode="decimal" class="sh-price" value="${esc(String(r.price).replace('.', ','))}" aria-label="Verkaufspreis"><span>€</span></div>
-    </div>`).join('') : '<div class="empty">Auf dem Bild wurden keine Preise gefunden. Versuch einen schärferen Screenshot der Liste „Verkauft“.</div>';
-  $('#shot-save').hidden = !shotRows.length; $('#shot-shipped-wrap').hidden = !shotRows.length;
+      <input type="checkbox" class="sh-on"${r.title ? ' checked' : ''} aria-label="Übernehmen">
+      <div class="shot-main"><input type="text" class="sh-title" value="${esc(r.title)}" placeholder="Name eintragen" aria-label="Name">${warn(r)}${r.note ? `<span class="small muted">${esc(r.note)}</span>` : ''}</div>
+      <div class="price-mini"><input type="text" inputmode="decimal" class="sh-price" value="${r.price ? esc(r.price.toFixed(2).replace('.', ',')) : ''}" placeholder="–" aria-label="${shotKind === 'buy' ? 'Einkaufspreis' : 'Vinted-Preis'}"><span>€</span></div>
+    </div>`).join('') + (sum(shotRows, r => r.price)
+      ? `<div class="shot-sum">Zusammen: <strong>${eur.format(sum(shotRows, r => r.price))}</strong>${shotShip && shotKind === 'buy' ? ` + ${eur.format(shotShip)} Versand/Zoll` : ''}</div>`
+      : `<div class="shot-sum">Auf dem Bild stehen keine Preise. Kein Problem: Im nächsten Schritt trägst du den <strong>Gesamtpreis</strong> ein, und das Cockpit verteilt ihn auf alle Teile.</div>`)
+    : shotLines.length ? `<div class="empty">Auf dem Bild wurden keine Preise gefunden. Tipp: Zoom so, dass Name und Preis gut lesbar sind, und mach den Screenshot nochmal.</div>` : '';
+  $('#shot-save').hidden = !shotRows.length;
+}
+function setShotKind(k) {
+  shotKind = k === 'list' ? 'list' : 'buy';
+  $$('#shot-kind button').forEach(b => b.setAttribute('aria-pressed', b.dataset.shk === shotKind));
+  renderShot();
 }
 function openShot() {
-  shotRows = []; $('#shot-list').innerHTML = ''; $('#shot-file').value = '';
-  ['#shot-status', '#shot-err', '#shot-save', '#shot-shipped-wrap'].forEach(id => { $(id).hidden = true; });
+  shotRows = []; shotLines = []; shotWords = []; shotShip = 0; $('#shot-list').innerHTML = ''; $('#shot-file').value = '';
+  ['#shot-status', '#shot-err', '#shot-save'].forEach(id => { $(id).hidden = true; });
+  if (!$('#bulk').hidden) closeBulk();
+  setShotKind(shotKind);
   $('#shot').hidden = false;
 }
 const closeShot = () => { $('#shot').hidden = true; };
-$('#inv-shot').addEventListener('click', openShot);
-$('#shot').addEventListener('click', e => { if (e.target.id === 'shot' || e.target.closest('[data-shclose]')) closeShot(); });
+// Cockpit zurücksetzen: löscht alle eigenen Teile – nur nach Eintippen von „LÖSCHEN“
+function openReset() {
+  const n = own.length;
+  $('#r-text').innerHTML = n
+    ? `Alle <strong>${n} ${n === 1 ? 'Teil' : 'Teile'}</strong> (Lager und Verkauft) werden gelöscht. Umsatz, Gewinn und Diagramme stehen danach wieder auf 0. <strong>Das kann man nicht rückgängig machen.</strong>`
+    : 'Dein Cockpit ist schon leer.';
+  $('#r-confirm').value = ''; $('#r-err').hidden = true; $('#r-go').disabled = !n; $('#r-csv').hidden = !n;
+  $('#reset').hidden = false; if (n) setTimeout(() => $('#r-confirm').focus(), 30);
+}
+const closeReset = () => { $('#reset').hidden = true; };
+$('#btn-reset').addEventListener('click', openReset);
+$('#reset').addEventListener('click', e => { if (e.target.id === 'reset' || e.target.closest('[data-rclose]')) closeReset(); });
+$('#r-csv').addEventListener('click', () => $('#btn-csv').click());
+$('#r-form').addEventListener('submit', e => {
+  e.preventDefault();
+  if ($('#r-confirm').value.trim().toUpperCase() !== 'LÖSCHEN') { $('#r-err').textContent = 'Tippe genau LÖSCHEN ein, wenn du wirklich alles löschen willst.'; $('#r-err').hidden = false; return; }
+  const ids = own.map(i => i.id), stamp = Date.now().toString(36);
+  own = []; renderAll();
+  for (let k = 0; k < ids.length; k += 100) enqueue({t: 'deleteMany', id: `reset-${stamp}-${k}`, ids: ids.slice(k, k + 100)});
+  closeReset(); toast('Cockpit zurückgesetzt – alles steht wieder auf 0.');
+});
+
+// Ein „+“ für alles: Auswahl Ein Teil / Großeinkauf / Screenshot
+function openAdd() { $('#addmenu').hidden = false; setTimeout(() => $('#addmenu .add-opt').focus(), 30); }
+const closeAdd = () => { $('#addmenu').hidden = true; };
+['#btn-add', '#btn-quick-side', '#fab', '#inv-add', '#mnav-add'].forEach(s => $(s).addEventListener('click', openAdd));
+$('#addmenu').addEventListener('click', e => {
+  if (e.target.id === 'addmenu' || e.target.closest('[data-aclose]')) return closeAdd();
+  const o = e.target.closest('[data-add]'); if (!o) return;
+  closeAdd(); ({one: openQuick, bulk: openBulk, shot: openShot})[o.dataset.add]();
+});
+$('#b-shot').addEventListener('click', openShot);
+$('#shot').addEventListener('click', e => {
+  if (e.target.id === 'shot' || e.target.closest('[data-shclose]')) return closeShot();
+  const k = e.target.closest('[data-shk]'); if (k) setShotKind(k.dataset.shk);
+});
 $('#shot-file').addEventListener('change', async e => {
   const files = [...e.target.files]; if (!files.length) return;
-  const st = $('#shot-status'); st.hidden = false; $('#shot-err').hidden = true; $('#shot-list').innerHTML = ''; $('#shot-save').hidden = true; $('#shot-shipped-wrap').hidden = true;
+  const st = $('#shot-status'); st.hidden = false; $('#shot-err').hidden = true; $('#shot-list').innerHTML = ''; $('#shot-save').hidden = true;
+  shotLines = []; shotWords = []; shotRows = [];
+  let worker = null;
   try {
     st.textContent = 'Lade Texterkennung … (beim ersten Mal ein paar Sekunden)';
     await loadTesseract();
-    const worker = await Tesseract.createWorker(['deu', 'eng'], 1, {logger: m => { if (m.status === 'recognizing text') st.textContent = `Lese Bild … ${Math.round(m.progress * 100)} %`; }});
-    let rows = [];
-    for (const f of files) { const {data} = await worker.recognize(f); rows = rows.concat(parseShot(data.text)); }
-    await worker.terminate();
-    shotRows = matchShot(rows);
-    st.textContent = shotRows.length ? `${shotRows.length} Verkäufe erkannt, ${shotRows.filter(r => r.id).length} passen zu Teilen in deinem Lager. Bitte prüfen:` : '';
+    worker = await Tesseract.createWorker(['deu', 'eng'], 1, {logger: m => { if (m.status === 'recognizing text') st.textContent = `Lese Bild … ${Math.round(m.progress * 100)} %`; }});
+    await worker.setParameters({tessedit_pageseg_mode: '4', preserve_interword_spaces: '1'}); // Zeilen von links nach rechts zusammenhalten (Name + Preis)
+    for (const [n, f] of files.entries()) {
+      st.textContent = 'Bereite Bild auf …';
+      let img; try { img = await prepImage(f); } catch { img = f; }
+      await worker.setParameters({tessedit_pageseg_mode: '4'});
+      const {data} = await worker.recognize(img);
+      const lines = (data.lines && data.lines.length)
+        ? data.lines.map(l => ({text: l.text, conf: l.confidence, y0: l.bbox && l.bbox.y0, y1: l.bbox && l.bbox.y1, img: n}))
+        : String(data.text).split('\n').map(t => ({text: t, conf: data.confidence, img: n}));
+      shotLines = shotLines.concat(lines);
+      // Zweiter Durchgang „einzelne Wörter“ – findet kleine Angaben wie Größen, die neben Produktbildern stehen
+      st.textContent = 'Suche Größen …';
+      await worker.setParameters({tessedit_pageseg_mode: '11'});
+      const r2 = await worker.recognize(img);
+      shotWords = shotWords.concat((r2.data.words || []).filter(w => w.bbox).map(w => ({text: w.text.trim(), y0: w.bbox.y0, y1: w.bbox.y1, img: n})));
+    }
+    shotRows = parseShot(shotLines, shotWords);
     renderShot();
   } catch {
     st.hidden = true;
     $('#shot-err').textContent = 'Das Bild konnte nicht gelesen werden. Prüf deine Internetverbindung (die Texterkennung wird beim ersten Mal geladen) und versuch es nochmal.';
     $('#shot-err').hidden = false;
-  }
+  } finally { if (worker) worker.terminate().catch(() => {}); }
 });
-$('#shot-list').addEventListener('change', e => {
-  const row = e.target.closest('.shot-row'); if (!row) return;
-  if (e.target.classList.contains('sh-item')) row.querySelector('.sh-on').checked = !!e.target.value;
-});
+// Geprüfte Zeilen in den Großeinkauf übernehmen – dort Lieferant, Datum und Kategorie wählen und „Teile anlegen“
 $('#shot-save').addEventListener('click', () => {
-  const shipped = $('#shot-shipped').checked, used = new Set(), before = [], after = [];
-  $$('#shot-list .shot-row').forEach(row => {
-    if (!row.querySelector('.sh-on').checked) return;
-    const id = row.querySelector('.sh-item').value, price = num(row.querySelector('.sh-price').value);
-    if (!id || used.has(id) || !price) return;
-    const it = items().find(i => i.id === id); if (!it || it.status !== 'lager') return;
-    used.add(id); before.push({...it});
-    const sold = {...it, status: shipped ? 'versendet' : 'zu_packen', soldPrice: price, soldDate: TODAY, buyer: '', shippedDate: shipped ? TODAY : null};
-    saveItem(sold); after.push(sold);
-  });
-  if (!before.length) { $('#shot-err').textContent = 'Wähle bei mindestens einem Verkauf das passende Teil aus deinem Lager.'; $('#shot-err').hidden = false; return; }
-  closeShot(); cheer(after);
-  toast(`${before.length} ${before.length === 1 ? 'Verkauf' : 'Verkäufe'} übernommen.`, {label: 'Rückgängig', fn: () => before.forEach(it => saveItem(it))});
+  const rows = $$('#shot-list .shot-row').filter(r => r.querySelector('.sh-on').checked)
+    .map(r => ({title: shotClean(r.querySelector('.sh-title').value), price: num(r.querySelector('.sh-price').value)})).filter(r => r.title);
+  if (!rows.length) { $('#shot-err').textContent = 'Wähle mindestens ein Teil mit Namen aus.'; $('#shot-err').hidden = false; return; }
+  const kind = shotKind, ship = shotShip, f = v => v.toFixed(2).replace('.', ',');
+  closeShot(); openBulk();
+  $('#b-lines').value = rows.map(r => r.price ? (kind === 'buy' ? `${r.title}; ${f(r.price)}` : `${r.title}; ; ${f(r.price)}`) : r.title).join('\n');
+  const allPriced = kind === 'buy' && rows.every(r => r.price);
+  if (allPriced) $('#b-total').value = sum(rows, r => r.price).toFixed(2);
+  if (kind === 'buy' && ship) $('#b-ship').value = ship.toFixed(2);
+  renderBulk();
+  if (!allPriced) setTimeout(() => $('#b-total').focus(), 60);
+  toast(allPriced ? `${rows.length} Teile übernommen. Lieferant und Kategorie prüfen, dann „Teile anlegen“.` : `${rows.length} Teile übernommen. Trag noch den Gesamtpreis ein, den du bezahlt hast.`);
 });
 $('#s-price').addEventListener('input', renderSellCalc);
 let sellDown = false;
@@ -1688,8 +1798,6 @@ $('#item-form').addEventListener('submit', e => {
   toast('Gespeichert.');
 });
 $('#goal-input').addEventListener('change', e => { profile.goal = Math.max(0, num(e.target.value)); saveProfile(); renderGoal(); });
-$('#reinvest').addEventListener('input', e => { profile.reinvest = num(e.target.value); renderCapital(); });
-$('#reinvest').addEventListener('change', saveProfile);
 $('#btn-csv').addEventListener('click', () => {
   try {
     const url = URL.createObjectURL(new Blob(['﻿' + buildCsv()], {type: 'text/csv;charset=utf-8'}));
@@ -1710,7 +1818,26 @@ function showGate(mode, msg) {
   $('#g-err').hidden = !msg; $('#g-err').textContent = msg || '';
   $('#gate-title').textContent = mode === 'config' ? 'Fast geschafft' : 'Willkommen zurück';
   $('#gate-sub').textContent = mode === 'login' ? 'Melde dich an, um dein Cockpit zu öffnen.' : mode === 'loading' ? 'Einen Moment …' : 'Noch ein Schritt fehlt.';
-  if (mode === 'login') setTimeout(() => ($('#g-email').value ? $('#g-pass') : $('#g-email')).focus(), 30);
+  if (mode === 'login') { setTimeout(() => ($('#g-email').value ? $('#g-pass') : $('#g-email')).focus(), 30); renderLock(); }
+}
+// Schutz vor Passwort-Raten: nach 3 falschen Versuchen 10 Minuten Sperre (zusätzlich zu den Grenzen von Supabase)
+const LOCK_KEY = LS + '-lock', LOCK_TRIES = 3, LOCK_MS = 10 * 60 * 1000;
+const lockState = () => { try { return JSON.parse(lsGet(LOCK_KEY) || 'null') || {fails: 0, until: 0}; } catch { return {fails: 0, until: 0}; } };
+let lockTimer = null;
+function renderLock() {
+  clearTimeout(lockTimer);
+  const s = lockState(), left = s.until - Date.now();
+  if (left > 0) {
+    const t = Math.ceil(left / 1000), mm = Math.floor(t / 60), ss = String(t % 60).padStart(2, '0');
+    $('#g-submit').disabled = true;
+    $('#g-err').textContent = `Zu viele Fehlversuche. Aus Sicherheitsgründen kannst du es erst in ${mm}:${ss} Minuten wieder versuchen.`;
+    $('#g-err').hidden = false;
+    lockTimer = setTimeout(renderLock, 1000);
+    return true;
+  }
+  if (s.until) { lsSet(LOCK_KEY, JSON.stringify({fails: 0, until: 0})); $('#g-err').hidden = true; }
+  $('#g-submit').disabled = false;
+  return false;
 }
 async function enterApp() {
   showGate('loading');
@@ -1728,6 +1855,7 @@ $('#g-eye').addEventListener('click', () => {
 });
 $('#gate-login').addEventListener('submit', async e => {
   e.preventDefault();
+  if (renderLock()) return;
   const btn = $('#g-submit'), label = btn.innerHTML;
   btn.disabled = true; btn.innerHTML = '<span class="spin"></span><span>Anmelden …</span>'; $('#g-err').hidden = true;
   let res;
@@ -1736,13 +1864,26 @@ $('#gate-login').addEventListener('submit', async e => {
   const {data, error} = res;
   btn.disabled = false; btn.innerHTML = label;
   if (error) {
-    $('#g-err').textContent = /confirm/i.test(error.message) ? 'Bestätige zuerst deine E-Mail-Adresse.' : error.message === 'network' ? 'Keine Verbindung. Prüf dein Internet.' : 'E-Mail oder Passwort stimmt nicht.';
+    const wrong = !/confirm/i.test(error.message) && error.message !== 'network';
+    let tip = '';
+    if (wrong) {
+      // Nur echte Fehlversuche zählen (nicht „kein Internet“)
+      const s = lockState(); s.fails = (s.fails || 0) + 1;
+      if (s.fails >= LOCK_TRIES) { s.fails = 0; s.until = Date.now() + LOCK_MS; }
+      lsSet(LOCK_KEY, JSON.stringify(s));
+      const left = LOCK_TRIES - s.fails;
+      if (!s.until) tip = ` Noch ${left} ${left === 1 ? 'Versuch' : 'Versuche'}, dann wird der Login für 10 Minuten gesperrt.`;
+    }
+    $('#g-err').textContent = /confirm/i.test(error.message) ? 'Bestätige zuerst deine E-Mail-Adresse.' : error.message === 'network' ? 'Keine Verbindung. Prüf dein Internet.' : 'E-Mail oder Passwort stimmt nicht.' + tip;
     $('#g-err').hidden = false;
     const card = $('#gate-card'); card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+    if (wrong) { $('#g-pass').value = ''; renderLock(); }
     return;
   }
+  lsSet(LOCK_KEY, JSON.stringify({fails: 0, until: 0}));
   session = data.session; $('#g-pass').value = ''; enterApp();
 });
+
 const logout = async () => { if (sb) await sb.auth.signOut(); own = []; showGate('login'); };
 $('#btn-logout').addEventListener('click', logout);
 $('#btn-logout-m').addEventListener('click', logout);
