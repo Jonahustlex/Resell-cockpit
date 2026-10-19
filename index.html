@@ -170,6 +170,8 @@ svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .lg-dot{display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--green);margin-right:7px;box-shadow:0 0 6px var(--green)}
 .lg-dot.prev{background:#C9CED6;box-shadow:none}
 .perf-lab{width:100%;font-size:13px;color:var(--ink-3)}
+.pdelta{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;font-size:13px;color:var(--green);background:var(--green-soft);border:1px solid var(--green-line);box-shadow:0 0 16px -6px rgba(47,196,205,.6);white-space:nowrap}
+.perf-total .pdelta b{font-size:13.5px;font-weight:700;letter-spacing:0;font-variant-numeric:tabular-nums}
 .chart-box{position:relative;border:1px solid rgba(47,196,205,.55);border-radius:16px;padding:14px 12px 4px;background:linear-gradient(180deg,rgba(47,196,205,.045),rgba(0,0,0,.25));box-shadow:0 0 0 1px rgba(47,196,205,.08),0 0 30px -4px rgba(47,196,205,.35),inset 0 0 34px -12px rgba(47,196,205,.3)}
 .perf-unit{position:absolute;top:8px;right:14px;font-size:11px;color:var(--ink-3)}
 .chart .bar{fill:url(#barGrad);filter:drop-shadow(0 0 6px rgba(47,196,205,.45));transition:fill .15s}
@@ -636,7 +638,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
         <section class="panel" aria-labelledby="h-goal">
           <div class="panel-head"><div class="ph-title"><span class="ico"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></span><h2 id="h-goal">Monatsziel</h2></div><span class="eyebrow" id="goal-month"></span></div>
           <div id="goal-body"></div>
-          <div class="inline-field"><label for="goal-input">Gewinnziel pro Monat</label><input type="number" id="goal-input" min="0" step="10" inputmode="decimal"> €</div>
+          <div class="inline-field"><label for="goal-input">Umsatzziel pro Monat</label><input type="number" id="goal-input" min="0" step="10" inputmode="decimal"> €</div>
         </section>
         </div>
         <div class="reset-zone"><button type="button" class="btn ghost sm" id="btn-reset">Cockpit zurücksetzen</button></div>
@@ -974,6 +976,15 @@ function deltaHtml(cur, prev, vs) {
   if (cls === 'flat') return `<span class="delta flat"><b>=</b> gleich wie ${esc(vs)}</span>`;
   return `<span class="delta ${cls}"><b>${cls === 'up' ? '↑' : '↓'} ${Math.abs(Math.round(ch * 100))} %</b> ${cls === 'up' ? 'mehr' : 'weniger'} als ${esc(vs)}</span>`;
 }
+// Performance-Seite: Vergleich als blaues Abzeichen mit Pfeil (gleicher Zeitraum im Vormonat bzw. davor)
+function perfDelta(cur, prev, R) {
+  if (prev == null || !isFinite(prev)) return '';
+  const zu = {'letzter Monat': 'zum letzten Monat', 'die 30 Tage davor': 'zu den 30 Tagen davor', 'letztes Jahr': 'zum letzten Jahr'}[R.vs] || 'zu ' + R.vs;
+  const tip = `Verglichen mit ${fmtD(R.pf)} – ${fmtD(R.pt)}: ${eur.format(prev)}`;
+  if (Math.abs(prev) < 0.01) return cur > 0 ? `<span class="pdelta" title="${esc(tip)}"><b>↑ Neu</b> ${esc(zu)} (0 €)</span>` : '';
+  const ch = (cur - prev) / Math.abs(prev), up = ch >= 0;
+  return `<span class="pdelta" title="${esc(tip)}"><b>${up ? '↑' : '↓'} ${Math.abs(Math.round(ch * 100))} %</b> ${esc(zu)}</span>`;
+}
 // Mini-Kurve für die Zahlen-Karten (grün = steigt, rot = fällt).
 function sparkSvg(vals, up) {
   const v = vals.filter(x => x != null && isFinite(x)); if (v.length < 2) return '';
@@ -1054,15 +1065,16 @@ function renderChart() {
 
   // Kopf: nur der Umsatz im gewählten Zeitraum + Vergleich
   const s = stats(all, R.from, R.to), ps = R.pf ? stats(all, R.pf, R.pt) : null;
-  $('#perf-total').innerHTML = `<span class="perf-lab">Umsatz · ${esc(B.cur)}</span><b>${fmtT(chMetric, mval(s))}</b>${ps ? deltaHtml(mval(s), mval(ps), R.vs) : ''}`;
+  $('#perf-total').innerHTML = `<span class="perf-lab">Umsatz · ${esc(B.cur)}</span><b>${fmtT(chMetric, mval(s))}</b>${ps ? perfDelta(mval(s), mval(ps), R) : ''}`;
   $$('#ch-type button').forEach(b => b.setAttribute('aria-pressed', b.dataset.c === chType));
-  $('#ch-legend').innerHTML = `<span><i class="lg-dot"></i>${esc(B.cur)}</span>` + (B.prev ? `<span><i class="lg-dot prev"></i>${esc(B.prev)}</span>` : '');
+  $('#ch-legend').innerHTML = `<span><i class="lg-dot"></i>${esc(B.cur)}</span>`;
   $('#perf-unit').textContent = 'pro ' + B.unit;
 
   // Werte pro Tag / Woche / Monat
   const val = (f, to) => mval(stats(all, f, to));
   const cur = B.list.map(b => b.future ? null : val(b.from, b.to));
-  const prev = B.prev ? B.list.map(b => b.pFrom ? val(b.pFrom, b.pTo) : null) : null;
+  // Vergleichslinie zum Vormonat bewusst aus – der Vergleich steht oben im Prozent-Abzeichen
+  const prev = null;
 
   // Skala
   // Groß: füllt den Großteil des Bildschirms (Handy ~55 %, Computer ~62 % der Höhe)
@@ -1106,7 +1118,7 @@ function renderChart() {
 
   let body = '';
   if (chType === 'bar') {
-    const bw = Math.max(3, Math.min(64, band * 0.8)), r = Math.min(8, bw / 2);
+    const bw = Math.max(3, Math.min(44, band * 0.6)), r = Math.min(7, bw / 2); // einzelne Balken mit deutlichem Abstand
     body = cur.map((v, i) => {
       if (v == null || v === 0) return '';
       const top = v > 0 ? y(v) : y(0), h = Math.max(1, Math.abs(y(v) - y(0)));
@@ -1181,17 +1193,19 @@ function renderGoal() {
   const t = today0(); const y = t.getFullYear(), m = t.getMonth();
   const s = stats(items(), iso(new Date(y, m, 1)), TODAY);
   const dim = new Date(y, m + 1, 0).getDate(), day = t.getDate();
-  const goal = num(profile.goal); const prog = goal ? Math.min(1, Math.max(0, s.profit / goal)) : 0;
-  const fc = s.profit / day * dim;
+  // Monatsziel zählt den Umsatz (was Käufer bezahlt haben), nicht den Gewinn
+  const done = s.rev;
+  const goal = num(profile.goal); const prog = goal ? Math.min(1, Math.max(0, done / goal)) : 0;
+  const fc = done / day * dim;
   $('#goal-month').textContent = t.toLocaleDateString('de-BE', {month:'long'});
   $('#goal-input').value = goal;
   const onTrack = fc >= goal;
-  const left = Math.max(0, goal - s.profit);
+  const left = Math.max(0, goal - done);
   const msg = !goal ? 'Trag unten ein Ziel ein.'
     : left === 0 ? 'Ziel geschafft! 🎉'
-    : `Noch <strong>${eur0.format(left)}</strong> bis zum Ziel. ${s.profit <= 0 ? 'Mit dem ersten Verkauf geht es los.' : onTrack ? 'Du bist auf Kurs.' : `Wenn es so weitergeht, schaffst du ca. ${eur0.format(fc)}.`}`;
+    : `Noch <strong>${eur0.format(left)}</strong> bis zum Ziel. ${done <= 0 ? 'Mit dem ersten Verkauf geht es los.' : onTrack ? 'Du bist auf Kurs.' : `Wenn es so weitergeht, schaffst du ca. ${eur0.format(fc)}.`}`;
   $('#goal-body').innerHTML = `
-    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="big">${eur0.format(s.profit)}</span><span class="muted mono">von ${eur0.format(goal)} Gewinn</span></div>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="big">${eur0.format(done)}</span><span class="muted mono">von ${eur0.format(goal)} Umsatz</span></div>
     <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(prog * 100)}" aria-label="Fortschritt Monatsziel"><i style="width:${prog * 100}%"></i></div>
     <p class="note" style="color:var(--ink-2)">${msg}</p>`;
 }
@@ -1325,11 +1339,12 @@ async function copyText(text, btn) {
 }
 function renderStatus() {
   const h = new Date().getHours();
-  const hi = h < 11 ? 'Guten Morgen' : h < 18 ? 'Hallo' : 'Guten Abend';
+  // 4–11 Uhr Morgen, 11–17 Uhr Mittag, sonst Abend
+  const hi = h >= 4 && h < 11 ? 'Guten Morgen' : h >= 11 && h < 17 ? 'Guten Mittag' : 'Guten Abend';
+  $('#greeting').textContent = `${hi}, Boss.`;
   const mail = (session && session.user && session.user.email) || '';
   const first = mail ? mail.split('@')[0].split(/[._\-+0-9]/)[0] : '';
   const name = first ? first.charAt(0).toUpperCase() + first.slice(1) : '';
-  $('#greeting').textContent = name ? `${hi}, ${name}.` : `${hi}.`;
   $('#user-name').textContent = name || 'Du';
   $('#user-initials').textContent = (name || 'Du').charAt(0).toUpperCase();
   $('#user-mail').textContent = mail;
