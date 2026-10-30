@@ -697,7 +697,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
     <details class="q-more"><summary>Größe &amp; Nebenkosten</summary>
       <div class="form-grid">
         <div class="field"><label for="q-size">Größe</label><input type="text" id="q-size" placeholder="W32 L32"></div>
-        <div class="field"><label for="q-extra">Nebenkosten (€)</label><input type="text" inputmode="decimal" id="q-extra"><span class="help">Verpackung, Anfahrt</span></div>
+        <div class="field"><label for="q-extra">Nebenkosten (€)</label><input type="text" inputmode="decimal" id="q-extra" placeholder="0"><span class="help">Nur ausfüllen, wenn es welche gab (z. B. Verpackung, Anfahrt)</span></div>
       </div>
     </details>
     <p class="err" id="q-err" hidden></p>
@@ -941,7 +941,7 @@ async function removeItem(it) {
 }
 /* Eingaben im Deal-Rechner und die Schnell-Erfassungs-Vorgaben werden mitgespeichert. */
 function collectPrefs() {
-  return {quick: {src: qState.src, cat: qState.cat, extra: qState.extra}};
+  return {quick: {src: qState.src, cat: qState.cat}};
 }
 function applyPrefs() {
   if (prefs.quick) qState = {...qState, ...prefs.quick};
@@ -1267,7 +1267,7 @@ $('#notif').addEventListener('click', () => { $('#notif').hidden = true; });
 
 /* ---------- quick capture ---------- */
 const QK = LS + '-quick';
-let qState = {src:'', cat:'Jeans', extra:1.5};
+let qState = {src:'', cat:'Jeans'}; // Nebenkosten haben bewusst KEINEN Vorgabewert mehr: 0 €, außer du trägst etwas ein
 try { const q = JSON.parse(lsGet(QK) || 'null'); if (q) qState = {...qState, ...q}; } catch {}
 let qBrand = '', qSession = [];
 const KNOWN_BRANDS = ["Levi's",'True Religion','Lacoste','Nike','Adidas','Ralph Lauren','Carhartt','Diesel','Tommy Hilfiger','Wrangler','Lee','Stüssy','The North Face','Champion','Guess','Miss Sixty','Ed Hardy','Von Dutch','Fila','Kappa','Puma','Umbro','Dickies','Patagonia','Burberry'];
@@ -1323,7 +1323,7 @@ function openQuick() {
   if (!$('#modal').hidden) closeForm();
   qSession = []; qBrand = '';
   $('#q-name').value = ''; $('#q-price').value = ''; $('#q-list').value = ''; $('#q-size').value = ''; $('#q-src-new').value = '';
-  $('#q-extra').value = String(qState.extra).replace('.', ','); $('#q-err').hidden = true;
+  $('#q-extra').value = ''; $('#q-err').hidden = true;
   $('#q-draft').hidden = !restoreDraft('quick');
   renderQuick(); $('#quick').hidden = false;
   setTimeout(() => $('#q-name').focus(), 30);
@@ -1531,7 +1531,7 @@ $('#q-full').addEventListener('click', () => {
   const draft = {name: $('#q-name').value.trim(), price: $('#q-price').value.trim(), size: $('#q-size').value.trim(), src: $('#q-src-new').value.trim() || qState.src, extra: $('#q-extra').value.trim()};
   closeQuick(); openForm(null);
   $('#f-title').value = draft.name; $('#f-brand').value = guessBrand(draft.name); $('#f-cat').value = qState.cat;
-  if (draft.price) $('#f-buy').value = num(draft.price); $('#f-size').value = draft.size; $('#f-source').value = draft.src; $('#f-extra').value = num(draft.extra);
+  if (draft.price) $('#f-buy').value = num(draft.price); $('#f-size').value = draft.size; $('#f-source').value = draft.src; $('#f-extra').value = draft.extra ? num(draft.extra) : '';
 });
 $('#q-form').addEventListener('submit', e => {
   e.preventDefault();
@@ -1539,13 +1539,13 @@ $('#q-form').addEventListener('submit', e => {
   const title = $('#q-name').value.trim(); if (!title) { $('#q-name').focus(); return err('Was hast du gekauft? Ein Stichwort reicht.'); }
   const praw = $('#q-price').value.trim(); if (!praw || !isFinite(parseFloat(praw.replace(',', '.')))) { $('#q-price').focus(); return err('Trag den Einkaufspreis ein (0, wenn geschenkt).'); }
   const typedSrc = $('#q-src-new').value.trim(); if (typedSrc) qState.src = typedSrc;
-  qState.extra = num($('#q-extra').value);
+  const extra = num($('#q-extra').value); // leer = 0 €
   const lp = num($('#q-list').value);
   const it = {id:newId(), title, brand: qBrand || guessBrand(title), category: qState.cat, size: $('#q-size').value.trim(), source: qState.src,
-    buyDate: TODAY, buyPrice: num(praw), extraCost: qState.extra, listDate: lp ? TODAY : '', listPrice: lp || null, status:'lager',
+    buyDate: TODAY, buyPrice: num(praw), extraCost: extra, listDate: lp ? TODAY : '', listPrice: lp || null, status:'lager',
     soldPrice:null, soldDate:null, buyer:'', shippedDate:null, notes:''};
   saveQuickState(); saveItem(it); qSession.push(it);
-  $('#q-name').value = ''; $('#q-price').value = ''; $('#q-list').value = ''; $('#q-size').value = ''; $('#q-src-new').value = ''; $('#q-err').hidden = true; qBrand = '';
+  $('#q-name').value = ''; $('#q-price').value = ''; $('#q-list').value = ''; $('#q-size').value = ''; $('#q-src-new').value = ''; $('#q-extra').value = ''; $('#q-err').hidden = true; qBrand = '';
   clearDraft('quick'); $('#q-draft').hidden = true;
   renderQuick(); $('#q-name').focus();
   toast(`„${title}“ gespeichert.`, {label:'Rückgängig', fn: () => { qSession = qSession.filter(x => x.id !== it.id); removeItem(it); if (!$('#quick').hidden) renderQuick(); }});
