@@ -375,29 +375,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
 .add-opt small{display:block;color:var(--ink-3);font-size:13px;margin-top:2px}
 
 /* Login: links Spruch + leuchtende Kurve, rechts Milchglas-Karte */
-.gate{position:relative;min-height:100vh;min-height:100dvh;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,420px);gap:clamp(32px,6vw,88px);align-items:center;padding:48px clamp(16px,6vw,88px);max-width:1320px;margin:0 auto}
-.gate-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(620px 380px at 28% 42%,rgba(47,196,205,.12),transparent 70%),radial-gradient(500px 300px at 85% 80%,rgba(47,196,205,.06),transparent 70%)}
-.gate-bg::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:46px 46px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 30% 45%,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse 70% 60% at 30% 45%,#000 20%,transparent 75%)}
-.gate-hero{display:flex;flex-direction:column;gap:22px;min-width:0}
-.gate-brand{display:flex;align-items:center;gap:10px}
-.gate-brand strong{display:block;font-size:15px;line-height:1.2}
-.gate-brand span{font-size:12.5px;color:var(--ink-3)}
-.gate-hero h2{font-size:clamp(36px,5.2vw,64px);line-height:1;letter-spacing:-.035em;font-weight:650}
-.gate-hero h2 em{font-style:normal;color:var(--green);text-shadow:0 0 32px rgba(47,196,205,.45)}
-.gate-hero > p{margin:0;color:var(--ink-2);font-size:16px;max-width:44ch}
-.gate-feats{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
-.gate-feats li{display:flex;align-items:center;gap:12px;color:var(--ink-2);font-size:14.5px}
-.gate-feats .ico{width:30px;height:30px;border-radius:9px}
-.gate-visual{position:relative;height:190px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(16,18,21,.85),rgba(11,12,14,.35));overflow:hidden;box-shadow:var(--shadow)}
-.gv-chart{position:absolute;left:0;right:0;bottom:0;width:100%;height:150px;overflow:visible}
-.gv-line{fill:none;stroke:var(--green);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round;filter:drop-shadow(0 0 8px rgba(47,196,205,.7))}
-.gv-dot{fill:var(--green);filter:drop-shadow(0 0 8px var(--green))}
-.gv-chip{position:absolute;display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;background:rgba(21,24,28,.92);border:1px solid var(--line-2);font-size:12.5px;box-shadow:0 12px 30px -12px rgba(0,0,0,.9);white-space:nowrap}
-.gv-chip b{font-weight:600}
-.gv-chip .mono{color:var(--green)}
-.gv-chip.c1{top:16px;left:18px}
-.gv-chip.c2{top:62px;right:18px;flex-direction:column;align-items:flex-start;gap:2px}
-.gv-chip.c2 b{color:var(--green);font-size:18px}
+/* Login: nur eine zentrierte Karte, dahinter das große R (wie beim Lade-Bildschirm) */
+.gate{position:relative;min-height:100vh;min-height:100dvh;display:grid;grid-template-columns:minmax(0,400px);justify-content:center;align-content:center;padding:32px 16px;isolation:isolate}
+.gate-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:radial-gradient(60% 45% at 50% 46%,rgba(47,196,205,.10),transparent 70%),var(--bg)}
+.splash-r.gate-r{font-size:min(165vw,112vh);background:linear-gradient(160deg,rgba(47,196,205,.26),rgba(0,119,130,.04) 72%);-webkit-background-clip:text;background-clip:text}
+.gate .gate-card{background:rgba(16,18,21,.58);backdrop-filter:blur(10px) saturate(1.2);-webkit-backdrop-filter:blur(10px) saturate(1.2)}
+.gc-logo{width:60px;height:60px;border-radius:18px;display:grid;place-items:center;margin:0 auto 16px;background:linear-gradient(145deg,var(--green),var(--green-2));color:var(--green-ink);font-weight:800;font-size:20px;letter-spacing:.02em;box-shadow:0 0 36px -6px rgba(47,196,205,.7)}
+.gc-head{text-align:center}
 .gate-card{position:relative;width:100%;background:rgba(16,18,21,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line-2);border-radius:22px;padding:30px 26px 24px;display:flex;flex-direction:column;gap:20px;box-shadow:0 30px 80px -30px rgba(0,0,0,.95),0 0 60px -22px rgba(47,196,205,.3)}
 .gate-card::before{content:"";position:absolute;left:24px;right:24px;top:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(47,196,205,.8),transparent)}
 .gc-head h1{font-size:24px;letter-spacing:-.02em}
@@ -414,6 +398,24 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
 #g-submit:hover svg.i{transform:translateX(3px)}
 .gc-note{display:flex;align-items:center;gap:8px;justify-content:center;margin:2px 0 0;font-size:12.5px;color:var(--ink-3)}
 .gc-note svg.i{width:15px;height:15px;color:var(--green)}
+/* Lade-Bildschirm: großes R im Hintergrund, Logo + schmaler Ladebalken */
+.splash{position:fixed;inset:0;z-index:60;display:grid;place-items:center;overflow:hidden;background:radial-gradient(60% 45% at 50% 46%,rgba(47,196,205,.11),transparent 70%),var(--bg)}
+.splash[hidden]{display:none}
+.splash{transition:opacity .3s ease}
+.splash.out{opacity:0}
+/* Zahl „zu packen“ direkt am Menüpunkt Übersicht */
+.nav-badge{position:absolute;top:2px;right:calc(50% - 22px);min-width:17px;height:17px;padding:0 5px;border-radius:9px;background:var(--warn);color:#1a1405;font-size:10.5px;font-weight:700;line-height:17px;text-align:center;box-shadow:0 0 0 2px var(--bg)}
+.nav-badge[hidden]{display:none}
+.nav button,.mnav button{position:relative}
+.nav .nav-badge{position:static;margin-left:auto;box-shadow:none}
+.splash-r{position:absolute;left:50%;top:50%;transform:translate(-50%,-53%);font:800 min(110vw,88vh)/1 var(--f-body);padding:0 .12em;background:linear-gradient(160deg,rgba(47,196,205,.20),rgba(0,119,130,.03) 72%);-webkit-background-clip:text;background-clip:text;color:transparent;user-select:none;pointer-events:none}
+.splash-core{position:relative;display:flex;flex-direction:column;align-items:center;gap:24px}
+.splash-logo{width:76px;height:76px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(145deg,var(--green),var(--green-2));color:var(--green-ink);font-weight:800;font-size:25px;letter-spacing:.02em;box-shadow:0 0 44px -6px rgba(47,196,205,.7)}
+.splash-bar{width:120px;height:3px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden}
+.splash-bar i{display:block;width:40%;height:100%;border-radius:3px;background:var(--green);box-shadow:0 0 10px rgba(47,196,205,.8);animation:splashBar 1.15s ease-in-out infinite}
+@keyframes splashBar{0%{transform:translateX(-110%)}100%{transform:translateX(260%)}}
+@media (prefers-reduced-motion:no-preference){.splash-logo{animation:splashPulse 1.8s ease-in-out infinite}}
+@keyframes splashPulse{50%{transform:scale(1.04);box-shadow:0 0 64px 0 rgba(47,196,205,.85)}}
 .gate-loading{display:flex;align-items:center;gap:10px;color:var(--ink-2);font-size:14px;padding:6px 0}
 .spin{width:18px;height:18px;border:2px solid var(--line-2);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;flex:none}
 #g-submit .spin{width:16px;height:16px;border-color:rgba(3,22,10,.25);border-top-color:var(--green-ink)}
@@ -422,23 +424,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
 .shake{animation:shake .35s}
 .gate-card code{font-family:var(--f-mono);font-size:12.5px;background:var(--card-2);padding:1px 5px;border-radius:4px}
 @media (prefers-reduced-motion:no-preference){
-  .gv-line{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.8s .25s cubic-bezier(.6,.1,.2,1) forwards}
-  .gv-area,.gv-dot{opacity:0;animation:fadein .8s 1.5s forwards}
-  .gv-chip.c1{animation:float 6s ease-in-out infinite}
-  .gv-chip.c2{animation:float 7s ease-in-out -2s infinite}
-  .gate-hero > *,.gate-card{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
-  .gate-hero > *:nth-child(2){animation-delay:.06s} .gate-hero > *:nth-child(3){animation-delay:.12s} .gate-hero > *:nth-child(4){animation-delay:.18s} .gate-hero > *:nth-child(5){animation-delay:.24s}
-  .gate-card{animation-delay:.1s}
+  .gate-card{animation:rise .6s cubic-bezier(.2,.7,.2,1) .05s both}
   @keyframes draw{to{stroke-dashoffset:0}}
   @keyframes fadein{to{opacity:1}}
   @keyframes float{50%{transform:translateY(-6px)}}
 }
 @media (max-width:900px){
-  .gate{grid-template-columns:minmax(0,1fr);padding:28px 16px;gap:26px;align-content:center}
-  .gate-hero{gap:12px}
-  .gate-hero h2{font-size:clamp(32px,9vw,42px)}
-  .gate-hero > p{font-size:14.5px}
-  .gate-feats,.gate-visual{display:none}
+  .gate{grid-template-columns:minmax(0,1fr);padding:28px 16px}
   .gate-card{padding:24px 18px 20px}
 }
 .foot{font-size:12px;color:var(--ink-3)}
@@ -487,30 +479,18 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
 </style>
 </head>
 <body>
-<div class="gate" id="gate">
-  <div class="gate-bg" aria-hidden="true"></div>
-  <section class="gate-hero">
-    <div class="gate-brand"><span class="logo" aria-hidden="true">RC</span><div><strong>Resell Cockpit</strong><span>Vinted-Reselling</span></div></div>
-    <h2>Dein Reselling.<br><em>Voll im Griff.</em></h2>
-    <p>Umsatz, Gewinn, Lager und Pakete an einem Ort. Auf dem Handy und am Computer.</p>
-    <ul class="gate-feats">
-      <li><span class="ico"><svg class="i" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span>Sieh sofort, was du wirklich verdienst</li>
-      <li><span class="ico"><svg class="i" viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg></span>Keine Versandfrist mehr verpassen</li>
-      <li><span class="ico"><svg class="i" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg></span>Großeinkäufe in Sekunden erfassen</li>
-    </ul>
-    <div class="gate-visual" aria-hidden="true">
-      <svg class="gv-chart" viewBox="0 0 560 170" preserveAspectRatio="none">
-        <defs><linearGradient id="gvA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2FC4CD" stop-opacity=".28"/><stop offset="1" stop-color="#2FC4CD" stop-opacity="0"/></linearGradient></defs>
-        <path class="gv-area" fill="url(#gvA)" d="M0,140 L40,128 L80,132 L120,110 L160,116 L200,92 L240,100 L280,76 L320,84 L360,60 L400,68 L440,44 L480,52 L520,30 L552,24 L552,170 L0,170Z"/>
-        <path class="gv-line" pathLength="1" d="M0,140 L40,128 L80,132 L120,110 L160,116 L200,92 L240,100 L280,76 L320,84 L360,60 L400,68 L440,44 L480,52 L520,30 L552,24"/>
-        <circle class="gv-dot" cx="552" cy="24" r="5"/>
-      </svg>
-      <div class="gv-chip c1"><span class="pill good">verkauft</span><b>Levi's 517 Bootcut</b><span class="mono">+ 21,50 €</span></div>
-      <div class="gv-chip c2"><span class="muted">Gewinn diesen Monat</span><b class="mono">↑ 18 %</b></div>
-    </div>
-  </section>
+<div class="splash" id="splash" role="status" aria-live="polite">
+  <div class="splash-r" aria-hidden="true">R</div>
+  <div class="splash-core">
+    <span class="splash-logo" aria-hidden="true">RC</span>
+    <div class="splash-bar" aria-hidden="true"><i></i></div>
+    <span class="sr">Lade dein Cockpit …</span>
+  </div>
+</div>
+<div class="gate" id="gate" hidden>
+  <div class="gate-bg" aria-hidden="true"><div class="splash-r gate-r">R</div></div>
   <div class="gate-card" id="gate-card">
-    <div class="gc-head"><h1 id="gate-title">Willkommen zurück</h1><p id="gate-sub">Melde dich an, um dein Cockpit zu öffnen.</p></div>
+    <div class="gc-head"><span class="gc-logo" aria-hidden="true">RC</span><h1 id="gate-title">Willkommen zurück</h1><p id="gate-sub">Melde dich an, um dein Cockpit zu öffnen.</p></div>
     <div class="gate-loading" id="gate-loading"><span class="spin"></span><span>Lade dein Cockpit …</span></div>
     <form id="gate-login" hidden autocomplete="on">
       <div class="field"><label for="g-email">E-Mail</label>
@@ -520,7 +500,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--green);outline:none;b
           <button type="button" class="eye" id="g-eye" aria-label="Passwort anzeigen" title="Passwort anzeigen"><svg class="i" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
       <p class="err" id="g-err" hidden></p>
       <button type="submit" class="btn primary big-btn" id="g-submit"><span>Anmelden</span><svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-      <p class="gc-note"><svg class="i" viewBox="0 0 24 24"><path d="M12 3 20 6v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/></svg>Privat: Nur du hast Zugang zu diesem Cockpit.</p>
     </form>
     <div id="gate-config" hidden>
       <p>Die Website ist noch nicht mit deiner Datenbank verbunden.</p>
@@ -1176,6 +1155,13 @@ function renderChart() {
 function renderPack() {
   const list = items().filter(i => i.status === 'zu_packen').map(i => ({i, dl: addWorkdays(i.soldDate || TODAY, 5)})).sort((a, b) => a.dl - b.dl);
   $('#pack-count').textContent = list.length ? '(' + list.length + ')' : '';
+  // Kleine Zahl am Menüpunkt „Übersicht“: so viele Pakete warten aufs Packen
+  $$('#nav [data-nav="top"], #mnav [data-nav="top"]').forEach(b => {
+    let s = b.querySelector('.nav-badge');
+    if (!s) { s = document.createElement('span'); s.className = 'nav-badge'; b.append(s); }
+    s.textContent = list.length; s.hidden = !list.length;
+    b.setAttribute('aria-label', list.length ? `Übersicht, ${list.length} ${list.length === 1 ? 'Paket' : 'Pakete'} zu packen` : 'Übersicht');
+  });
   if (!list.length) { $('#pack-list').innerHTML = '<div class="empty">Alles verpackt. Neue Verkäufe erscheinen hier mit ihrer Versandfrist.</div>'; return; }
   $('#pack-list').innerHTML = list.map(({i, dl}) => {
     const left = workdaysUntil(dl);
@@ -1871,11 +1857,13 @@ if ('ResizeObserver' in window) { let w = 0; new ResizeObserver(en => { const nw
 
 /* ---------- login & start ---------- */
 function showGate(mode, msg) {
-  $('#app').hidden = true; $('#fab').hidden = true; $('#gate').hidden = false;
+  // Beim Laden nur der schlichte Lade-Bildschirm, sonst die Login-Seite
+  $('#splash').hidden = mode !== 'loading';
+  $('#app').hidden = true; $('#fab').hidden = true; $('#gate').hidden = mode === 'loading';
   $('#gate-loading').hidden = mode !== 'loading'; $('#gate-login').hidden = mode !== 'login'; $('#gate-config').hidden = mode !== 'config';
   $('#g-err').hidden = !msg; $('#g-err').textContent = msg || '';
-  $('#gate-title').textContent = mode === 'config' ? 'Fast geschafft' : 'Willkommen zurück';
-  $('#gate-sub').textContent = mode === 'login' ? 'Melde dich an, um dein Cockpit zu öffnen.' : mode === 'loading' ? 'Einen Moment …' : 'Noch ein Schritt fehlt.';
+  $('#gate-title').textContent = mode === 'config' ? 'Fast geschafft' : 'Willkommen zurück, Boss.';
+  $('#gate-sub').textContent = mode === 'login' ? 'Melde dich an.' : mode === 'loading' ? 'Einen Moment …' : 'Noch ein Schritt fehlt.';
   if (mode === 'login') { setTimeout(() => ($('#g-email').value ? $('#g-pass') : $('#g-email')).focus(), 30); renderLock(); }
 }
 // Schutz vor Passwort-Raten: nach 3 falschen Versuchen 10 Minuten Sperre (zusätzlich zu den Grenzen von Supabase)
@@ -1903,6 +1891,8 @@ async function enterApp() {
   catch { return showGate('login', 'Deine Daten konnten nicht geladen werden. Prüf die Internetverbindung und melde dich neu an.'); }
   applyPrefs();
   $('#gate').hidden = true; $('#app').hidden = false; $('#fab').hidden = false;
+  // Lade-Bildschirm sanft ausblenden statt hart wegschalten
+  const sp = $('#splash'); sp.classList.add('out'); setTimeout(() => { sp.hidden = true; sp.classList.remove('out'); }, 320);
   $('#user-mail').textContent = session.user.email || '';
   renderAll(); checkHash(); flush();
 }
