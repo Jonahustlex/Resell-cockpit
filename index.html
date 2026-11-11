@@ -861,7 +861,7 @@ input:focus,select:focus,textarea:focus{box-shadow:0 0 0 3px var(--green-soft)}
       <div class="field"><label for="f-extra">Nebenkosten (€)</label><input type="number" id="f-extra" step="0.01" min="0" inputmode="decimal"><span class="help">Anteil Versand/Anfahrt, Verpackung</span></div>
       <div class="field"><label for="f-listdate">Eingestellt am</label><input type="date" id="f-listdate"></div>
       <div class="field"><label for="f-list">Angebotspreis (€)</label><input type="number" id="f-list" step="1" min="0" inputmode="decimal"></div>
-      <div class="field"><label for="f-status">Status</label><select id="f-status"><option value="lager">Im Lager</option><option value="zu_packen">Verkauft, zu packen</option><option value="versendet">Verkauft, versendet</option></select></div>
+      <div class="field"><label for="f-status">Status</label><select id="f-status"><option value="lager">Im Lager</option><option value="versendet">Verkauft</option></select></div>
     </div>
     <div class="form-grid" id="sold-fields">
       <div class="field"><label for="f-sold">Verkaufspreis (€) *</label><input type="number" id="f-sold" step="0.01" min="0" inputmode="decimal"></div>
@@ -1017,7 +1017,7 @@ const eur0 = new Intl.NumberFormat('de-BE', {style:'currency', currency:'EUR', m
 const num = v => { const n = parseFloat(String(v ?? '').replace(',', '.')); return isFinite(n) ? n : 0; };
 const pct = v => isFinite(v) ? Math.round(v * 100) + ' %' : '–';
 const CATS = ['Jeans','Pullover','Sport','Jacken','Shirts','Sonstiges'];
-const STATUS = {lager:'Im Lager', zu_packen:'Zu packen', versendet:'Versendet'};
+const STATUS = {lager:'Im Lager', zu_packen:'Verkauft', versendet:'Verkauft'};
 
 /* ---------- dates ---------- */
 const pad = n => String(n).padStart(2, '0');
@@ -1408,8 +1408,7 @@ function renderPack() {
   $$('#nav [data-nav="top"], #mnav [data-nav="top"]').forEach(b => {
     let s = b.querySelector('.nav-badge');
     if (!s) { s = document.createElement('span'); s.className = 'nav-badge'; b.append(s); }
-    s.textContent = list.length; s.hidden = !list.length;
-    b.setAttribute('aria-label', list.length ? `Übersicht, ${list.length} ${list.length === 1 ? 'Paket' : 'Pakete'} zu packen` : 'Übersicht');
+    s.hidden = true; b.setAttribute('aria-label', 'Übersicht');
   });
   if (!list.length) { $('#pack-list').innerHTML = '<div class="empty">Alles verpackt. Neue Verkäufe erscheinen hier mit ihrer Versandfrist.</div>'; return; }
   $('#pack-list').innerHTML = list.map(({i, dl}) => {
@@ -1457,7 +1456,7 @@ function openForm(it, sellMode) {
   $('#f-title').value = d.title || ''; $('#f-brand').value = d.brand || ''; fillSelect($('#f-cat'), CATS, d.category || 'Jeans');
   $('#f-size').value = d.size || ''; $('#f-source').value = d.source || ''; $('#f-buydate').value = d.buyDate || TODAY;
   $('#f-buy').value = d.buyPrice ?? ''; $('#f-extra').value = d.extraCost ?? ''; $('#f-listdate').value = d.listDate || '';
-  $('#f-list').value = d.listPrice ?? ''; $('#f-status').value = sellMode ? 'zu_packen' : d.status || 'lager';
+  $('#f-list').value = d.listPrice ?? ''; $('#f-status').value = sellMode ? 'versendet' : d.status === 'zu_packen' ? 'versendet' : d.status || 'lager';
   $('#f-sold').value = d.soldPrice ?? (sellMode ? (d.listPrice ?? '') : ''); $('#f-solddate').value = d.soldDate || TODAY; $('#f-buyer').value = d.buyer || '';
   $('#f-notes').value = d.notes || ''; $('#f-err').hidden = true;
   $('#del-zone').innerHTML = it ? '<button type="button" class="btn danger sm" id="f-del">Löschen</button>' : '';
@@ -1621,7 +1620,7 @@ function renderInventory() {
   // kleine Hinweise: im Lager "liegt seit X Tagen", bei Verkauften "zu packen"
   const chip = i => {
     if (invView === 'lager') { const age = Math.max(0, daysBetween(listedOn(i), TODAY)); return age >= 30 ? ` <span class="pill xs ${age >= 60 ? 'bad' : 'warn'}">seit ${age} Tagen</span>` : ''; }
-    return (i.soldDate ? ` · verkauft ${fmtD(i.soldDate)}` : '') + (i.status === 'zu_packen' ? ' <span class="pill xs warn">zu packen</span>' : '');
+    return i.soldDate ? ` · verkauft ${fmtD(i.soldDate)}` : '';
   };
   const main = i => { const meta = esc([i.brand, i.size].filter(Boolean).join(' · ') || i.category || '');
     return `<button type="button" class="inv-main" data-edit="${esc(i.id)}" title="Bearbeiten"><span class="it-t">${esc(i.title)}</span><span class="it-s">${meta}${chip(i)}</span></button>`; };
@@ -1664,20 +1663,17 @@ const ICO_BOX = '<svg class="i" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 
 const ICO_TAG = '<svg class="i" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>';
 const ICO_GO = '<svg class="i st-go" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 function renderSteps() {
-  const all = items(), toPack = all.filter(i => i.status === 'zu_packen').length;
+  // „Zu versenden“ gibt es nicht mehr: der Versand läuft über Vinted
+  const all = items();
   const stale = all.filter(i => i.status === 'lager' && daysBetween(listedOn(i), TODAY) >= STALE_DAYS).length;
-  const open = !$('#pack-wrap').hidden;
   const row = (key, ico, title, sub, n, extra) => `<button type="button" class="step${n ? '' : ' done'}" data-step="${key}"${extra || ''}>
       <span class="st-ico">${ico}</span><span class="st-txt"><b>${title}</b><small>${sub}</small></span><span class="st-n">${n}</span>${ICO_GO}</button>`;
-  $('#steps').innerHTML =
-    row('pack', ICO_BOX, 'Zu versenden', toPack ? 'Verkäufe für den Versand vorbereiten' : 'Alles verschickt', toPack, ` aria-expanded="${open && !!toPack}" aria-controls="pack-wrap"`) +
-    row('stale', ICO_TAG, 'Angebote prüfen', `Seit mindestens ${STALE_DAYS} Tagen unverkauft`, stale);
-  if (!toPack) $('#pack-wrap').hidden = true;
+  $('#steps').innerHTML = row('stale', ICO_TAG, 'Angebote prüfen', `Seit mindestens ${STALE_DAYS} Tagen unverkauft`, stale);
+  $('#pack-wrap').hidden = true;
 }
 $('#steps').addEventListener('click', e => {
   const b = e.target.closest('[data-step]'); if (!b) return;
-  if (b.dataset.step === 'pack') { if (b.classList.contains('done')) return; $('#pack-wrap').hidden = !$('#pack-wrap').hidden; renderSteps(); }
-  else navGo({target: $('#nav [data-nav="lager"]')});
+  navGo({target: $('#nav [data-nav="lager"]')});
 });
 // Feste Reihenfolge der Farben (geprüfte Palette); „Andere“ ist immer grau
 const MIX_COLORS = ['var(--mix-1)', 'var(--mix-2)', 'var(--mix-3)', 'var(--mix-4)'];
@@ -1845,7 +1841,7 @@ document.addEventListener('click', e => {
   else if (t.dataset.quicksell) {
     // Ein Tipp: zum hinterlegten Vinted-Preis verkauft
     const it = find(t.dataset.quicksell); if (!it) return;
-    const sold = {...it, status: 'zu_packen', soldPrice: num(it.listPrice), soldDate: TODAY, buyer: '', shippedDate: null};
+    const sold = {...it, status: 'versendet', soldPrice: num(it.listPrice), soldDate: TODAY, buyer: '', shippedDate: TODAY};
     saveItem(sold); cheer([sold]);
     toast('Verkauf gespeichert.', [
       {label: 'Anderer Preis', fn: () => { saveItem({...it}); openSell(it); }},
@@ -2112,7 +2108,8 @@ $('#s-form').addEventListener('submit', e => {
   const it = selling; if (!it) return;
   const raw = $('#s-price').value.trim();
   if (!raw || !isFinite(parseFloat(raw.replace(',', '.')))) { $('#s-err').textContent = 'Für wie viel hast du es verkauft?'; $('#s-err').hidden = false; $('#s-price').focus(); return; }
-  const sold = {...it, status: 'zu_packen', soldPrice: num(raw), soldDate: $('#s-date').value || TODAY, buyer: $('#s-buyer').value.trim().replace(/^@/, ''), shippedDate: null};
+  const sDate = $('#s-date').value || TODAY;
+  const sold = {...it, status: 'versendet', soldPrice: num(raw), soldDate: sDate, buyer: $('#s-buyer').value.trim().replace(/^@/, ''), shippedDate: sDate};
   closeSell(); saveItem(sold); cheer([sold]);
   toast('Verkauf gespeichert.', {label: 'Rückgängig', fn: () => saveItem({...it})});
 });
