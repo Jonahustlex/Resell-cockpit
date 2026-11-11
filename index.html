@@ -663,14 +663,18 @@ input:focus,select:focus,textarea:focus{box-shadow:0 0 0 3px var(--green-soft)}
   .inv-list .empty{margin:14px 16px 16px}
 }
 /* Login: eigenes Foto im Petrol-Ton statt dem großen R */
-.gate-bg{background:linear-gradient(180deg,rgba(0,40,45,.35),rgba(0,30,34,.62)),url("login-bg.jpg") center 55%/cover no-repeat,#0B2A2E}
-.gate-bg .gate-r{display:none}
+.gate-bg,.splash{background:linear-gradient(180deg,rgba(0,40,45,.35),rgba(0,30,34,.62)),url("login-bg.jpg") center 55%/cover no-repeat,#0B2A2E}
+.gate-bg .gate-r,.splash .splash-r{display:none}
+.splash .splash-bar{background:rgba(255,255,255,.25)}
+.splash .splash-bar i{background:#fff}
+.splash .splash-slow p{color:#fff}
 .splash-slow{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:0 24px}
 .splash-slow[hidden]{display:none}
 .splash-slow p{margin:0;font-size:14px;color:var(--ink-2)}
 .splash-btn{font:600 15px var(--f-body);padding:11px 22px;border-radius:10px;border:0;background:var(--green);color:var(--green-ink);cursor:pointer}
 .splash-btn:hover{background:var(--green-hover)}
 </style>
+<link rel="preload" as="image" href="login-bg.jpg">
 <script>try{if(localStorage.getItem('resell-cockpit-web-v1-theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
 </head>
 <body>
